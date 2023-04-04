@@ -1,0 +1,8 @@
+-   [ ] Reset input field after submit
+-   [x] Change a color from purple --> red --> green depending on if it is correct or not
+-   [ ] Add lowercase support, fuzzy matching, etc.
+-   [x] Fill in reference button for a cheat sheet
+-   [ ] Keep track of previous words and phonetic spelling errors
+    -   [ ] Prioritize words with letters not yet/recently seen
+    -   [ ] Practice words with have repeated errors
+-   [x] Add full word list
