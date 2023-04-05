@@ -3,6 +3,8 @@ import { SimpleGrid, Box, Anchor } from "@hope-ui/solid";
 import PageHeader from "../components/PageHeader";
 import Nav from "../components/Nav";
 
+import natoAlphabetImg from "../assets/nato-alphabet.png";
+
 interface CardProps {
     title: string;
     url: string;
@@ -38,7 +40,7 @@ const Home: Component = () => {
                     <Card
                         title="NATO Alphabet Quiz"
                         url="/nato-alphabet"
-                        image="src/assets/nato-alphabet.png"
+                        image={natoAlphabetImg}
                         description="A quiz to help you learn and practice the NATO phonetic alphabet."
                     />
                 </SimpleGrid>
