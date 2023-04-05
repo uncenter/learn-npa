@@ -1,4 +1,3 @@
-import { Component, createSignal } from "solid-js";
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -7,8 +6,12 @@ import {
 } from "@hope-ui/solid";
 import { A } from "@solidjs/router";
 import ChevronRightIcon from "@suid/icons-material/ChevronRight";
+interface NavProps {
+    title?: string;
+}
 
-const Nav: Component = (props: any) => {
+const Nav = (props: NavProps) => {
+    const titleExists = props.title !== undefined && props.title !== "";
     return (
         <div class="flex flex-start mx-10 my-6 mb-4 gap-4">
             <Breadcrumb separator={<ChevronRightIcon />}>
@@ -16,11 +19,15 @@ const Nav: Component = (props: any) => {
                     <BreadcrumbLink as={A} href="/">
                         Apps
                     </BreadcrumbLink>
-                    <BreadcrumbSeparator />
+                    {titleExists && <BreadcrumbSeparator />}
                 </BreadcrumbItem>
-                <BreadcrumbItem>
-                    <BreadcrumbLink currentPage>{props.title}</BreadcrumbLink>
-                </BreadcrumbItem>
+                {titleExists && (
+                    <BreadcrumbItem>
+                        <BreadcrumbLink currentPage>
+                            {props.title}
+                        </BreadcrumbLink>
+                    </BreadcrumbItem>
+                )}
             </Breadcrumb>
         </div>
     );

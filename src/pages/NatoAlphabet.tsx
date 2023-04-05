@@ -23,13 +23,13 @@ import medWordsRaw from "../data/med-words.txt?raw";
 import shortWordsRaw from "../data/short-words.txt?raw";
 import FuzzySet from "fuzzyset";
 
-const wordLists = {
+const wordLists: Record<string, string[]> = {
     long: longWordsRaw.split("\n"),
     medium: medWordsRaw.split("\n"),
     short: shortWordsRaw.split("\n").filter((word) => word.length > 3),
 };
 
-const natoAlphabet = {
+const natoAlphabet: Record<string, string> = {
     A: "Alpha",
     B: "Bravo",
     C: "Charlie",
@@ -252,10 +252,9 @@ const NatoAlphabetQuiz: Component = () => {
     function reset() {
         setSubmitted(false);
         newWord();
-        const input = document.getElementById("input");
-        if (input) {
-            input.value = "";
-        }
+        const input = ((
+            document.getElementById("input") as HTMLInputElement
+        ).value = "");
         setText("");
     }
     function updateWords(e: any, newWords: string) {

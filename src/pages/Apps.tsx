@@ -1,38 +1,49 @@
 import type { Component } from "solid-js";
 import { SimpleGrid, Box, Anchor } from "@hope-ui/solid";
 import PageHeader from "../components/PageHeader";
+import Nav from "../components/Nav";
+
+interface CardProps {
+    title: string;
+    url: string;
+    image: string;
+    description: string;
+}
+
+const Card = (props: CardProps) => {
+    return (
+        <a href={props.url} class="w-full">
+            <Box class="bg-neutral-200 rounded-lg text-center p-6 justify-end flex flex-col">
+                <h2 class="text-2xl font-bold">{props.title}</h2>
+                <img class="rounded-2xl p-2" src={props.image} />
+                <p class="text-lg">{props.description}</p>
+            </Box>
+        </a>
+    );
+};
 
 const Home: Component = () => {
     return (
-        <div class="m-10">
-            <div class="flex justify-center">
-                <PageHeader title="Apps" />
+        <>
+            <Nav />
+            <div class="m-10">
+                <div class="flex justify-center">
+                    <PageHeader title="Apps" />
+                </div>
+                <SimpleGrid
+                    gap="40px"
+                    columns={{ "@initial": 2, "@md": 3 }}
+                    class="mt-8"
+                >
+                    <Card
+                        title="NATO Alphabet Quiz"
+                        url="/nato-alphabet"
+                        image="src/assets/nato-alphabet.png"
+                        description="A quiz to help you learn and practice the NATO phonetic alphabet."
+                    />
+                </SimpleGrid>
             </div>
-            <SimpleGrid
-                gap="40px"
-                columns={{ "@initial": 2, "@md": 3 }}
-                class="mt-8"
-            >
-                <a href="/nato-alphabet" class="w-full">
-                    <Box class="bg-neutral-200 rounded-lg text-center p-6 justify-end flex flex-col">
-                        <h2 class="text-2xl font-bold">NATO Alphabet Quiz</h2>
-                        <img
-                            class="rounded-2xl p-2"
-                            src="src/assets/nato-alphabet.png"
-                        />
-                        <p class="text-lg">
-                            A quiz to help you learn and practice the NATO
-                            phonetic alphabet.
-                        </p>
-                    </Box>
-                </a>
-                <Box height="200px" class="bg-neutral-200 rounded-lg"></Box>
-                <Box height="200px" class="bg-neutral-200 rounded-lg"></Box>
-                <Box height="200px" class="bg-neutral-200 rounded-lg"></Box>
-                <Box height="200px" class="bg-neutral-200 rounded-lg"></Box>
-                <Box height="200px" class="bg-neutral-200 rounded-lg"></Box>
-            </SimpleGrid>
-        </div>
+        </>
     );
 };
 

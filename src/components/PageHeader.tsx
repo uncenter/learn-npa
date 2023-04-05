@@ -1,6 +1,8 @@
-import { Component } from "solid-js";
+interface PageHeaderProps {
+    title: string;
+}
 
-const PageHeader: Component = (props: any) => {
+const PageHeader = (props: PageHeaderProps) => {
     return (
         <div class="font-bold mb-4 self-center text-6xl">
             <h2>{props.title}</h2>
