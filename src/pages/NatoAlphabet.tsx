@@ -5,7 +5,6 @@ import {
     Input,
     InputGroup,
     InputRightAddon,
-    InputLeftAddon,
     Modal,
     ModalBody,
     ModalCloseButton,
@@ -18,6 +17,7 @@ import {
     Checkbox,
     HStack,
 } from "@hope-ui/solid";
+import Nav from "../components/Nav";
 import longWordsRaw from "../data/long-words.txt?raw";
 import medWordsRaw from "../data/med-words.txt?raw";
 import shortWordsRaw from "../data/short-words.txt?raw";
@@ -29,7 +29,7 @@ const wordLists = {
     short: shortWordsRaw.split("\n").filter((word) => word.length > 3),
 };
 
-const phoneticAlphabet = {
+const natoAlphabet = {
     A: "Alpha",
     B: "Bravo",
     C: "Charlie",
@@ -59,14 +59,14 @@ const phoneticAlphabet = {
 };
 
 const fuzzy = FuzzySet();
-for (let word of Object.values(phoneticAlphabet)) {
+for (let word of Object.values(natoAlphabet)) {
     fuzzy.add(word);
 }
 
 function phoneticWords(word: string) {
     const phoneticWords = [];
     for (let i = 0; i < word.length; i++) {
-        phoneticWords.push(phoneticAlphabet[word[i].toUpperCase()]);
+        phoneticWords.push(natoAlphabet[word[i].toUpperCase()]);
     }
     return phoneticWords;
 }
@@ -134,7 +134,7 @@ const AnswerCard = (props: any) => {
 };
 
 const ReferenceCard = () => {
-    const alphabet = Object.entries(phoneticAlphabet);
+    const alphabet = Object.entries(natoAlphabet);
     const middleIndex = Math.ceil(alphabet.length / 2);
     const leftAlphabet = alphabet.slice(0, middleIndex);
     const rightAlphabet = alphabet.slice(middleIndex);
@@ -205,11 +205,9 @@ const ReferenceCard = () => {
     );
 };
 
-const PhoneticAlphabetQuiz: Component = () => {
+const NatoAlphabetQuiz: Component = () => {
     const pastCharacters: any = {};
-    const [words, setWords] = createSignal(
-        mergeArrays(wordLists.short, wordLists.medium, wordLists.long)
-    );
+    const [words, setWords] = createSignal(mergeArrays(wordLists.short));
     const [word, setWord] = createSignal(
         words()[Math.floor(Math.random() * words().length)].toUpperCase()
     );
@@ -273,17 +271,60 @@ const PhoneticAlphabetQuiz: Component = () => {
         reset();
     }
     return (
-        <div class="flex m-10 flex-col">
-            <div class="font-bold mb-4 self-center text-4xl">
-                <h2>Phonetic Alphabet</h2>
-            </div>
-            <h3 class="mb-2 self-center">
-                Spell "{word()}" using the phonetic alphabet.
-            </h3>
-            <div class="flex flex-col gap-4 py-12 mx-6">
+        <>
+            <Nav title="NATO Alphabet Quiz" />
+            <div class="flex m-10 flex-col">
+                <div class="flex flex-col gap-4 mx-6">
+                    <div class="self-center text-4xl bg-gray-200 rounded-lg p-4 font-typewriter mb-4">
+                        {word()}
+                    </div>
+                    <InputGroup class="flex-row">
+                        <ReferenceCard />
+                        <Input
+                            id="input"
+                            class="h-14 uppercase text-2xl"
+                            disabled={submitted()}
+                            size="lg"
+                            oninput={(e) => setText(e.target.value)}
+                            onkeypress={(e) => {
+                                if (e.key === "Enter") {
+                                    setSubmitted(true);
+                                }
+                            }}
+                        />
+                        <InputRightAddon class="ps-0 pe-0">
+                            <Button
+                                id="submit"
+                                class="h-full text-xl"
+                                colorScheme="accent"
+                                disabled={submitted() || text().length === 0}
+                                onclick={() => {
+                                    setSubmitted(true);
+                                }}
+                            >
+                                Check
+                            </Button>
+                        </InputRightAddon>
+                        <Button
+                            id="reset"
+                            class="h-14 text-xl ml-1"
+                            colorScheme="neutral"
+                            disabled={submitted()}
+                            onclick={() => {
+                                reset();
+                            }}
+                        >
+                            Skip
+                        </Button>
+                    </InputGroup>
+                </div>
+                <h2 class="font-bold my-4 self-center text-2xl">
+                    Word lengths
+                </h2>
                 <CheckboxGroup
-                    colorScheme="accent"
-                    defaultValue={["short", "medium", "long"]}
+                    colorScheme="info"
+                    defaultValue={["short"]}
+                    class="flex flex-row gap-4 m-auto mb-4"
                 >
                     <HStack spacing="$5">
                         <Checkbox
@@ -312,61 +353,21 @@ const PhoneticAlphabetQuiz: Component = () => {
                         </Checkbox>
                     </HStack>
                 </CheckboxGroup>
-                <InputGroup class="flex-row">
-                    <ReferenceCard />
-                    <Input
-                        id="input"
-                        class="h-14 uppercase text-2xl"
-                        placeholder={word()}
-                        disabled={submitted()}
-                        size="lg"
-                        oninput={(e) => setText(e.target.value)}
-                        onkeypress={(e) => {
-                            if (e.key === "Enter") {
-                                setSubmitted(true);
-                            }
-                        }}
+                {submitted() && (
+                    <AnswerCard
+                        word={word}
+                        input={text()}
+                        answer={phoneticWords(word()).join(" ")}
+                        correct={isCorrect(
+                            text().split(" "),
+                            phoneticWords(word())
+                        )}
+                        reset={reset}
                     />
-                    <InputRightAddon class="ps-0 pe-0">
-                        <Button
-                            id="submit"
-                            class="h-full text-xl"
-                            colorScheme="accent"
-                            disabled={submitted() || text().length === 0}
-                            onclick={() => {
-                                setSubmitted(true);
-                            }}
-                        >
-                            Check
-                        </Button>
-                    </InputRightAddon>
-                    <Button
-                        id="reset"
-                        class="h-14 text-xl ml-1"
-                        colorScheme="neutral"
-                        disabled={submitted()}
-                        onclick={() => {
-                            reset();
-                        }}
-                    >
-                        Skip
-                    </Button>
-                </InputGroup>
+                )}
             </div>
-            {submitted() && (
-                <AnswerCard
-                    word={word}
-                    input={text()}
-                    answer={phoneticWords(word()).join(" ")}
-                    correct={isCorrect(
-                        text().split(" "),
-                        phoneticWords(word())
-                    )}
-                    reset={reset}
-                />
-            )}
-        </div>
+        </>
     );
 };
 
-export default PhoneticAlphabetQuiz;
+export default NatoAlphabetQuiz;

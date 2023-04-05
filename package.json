@@ -21,6 +21,7 @@
         "@hope-ui/solid": "^0.6.7",
         "@solidjs/router": "^0.8.2",
         "@stitches/core": "^1.2.8",
+        "@suid/icons-material": "^0.5.11",
         "fuzzyset": "^1.0.7",
         "solid-js": "^1.6.10",
         "solid-transition-group": "^0.0.10"

@@ -1,25 +1,16 @@
 import type { Component } from "solid-js";
 import { HopeThemeConfig, HopeProvider } from "@hope-ui/solid";
-import PhoneticAlphabetQuiz from "./pages/PhoneticAlphabet";
-import Nav from "./components/Nav";
-import Home from "./pages/Home";
+import NatoAlphabetQuiz from "./pages/NatoAlphabet";
+import Apps from "./pages/Apps";
 import { Route, Routes } from "@solidjs/router";
 
 const config: HopeThemeConfig = {
     initialColorMode: "system",
     lightTheme: {
-        colors: {
-            primary1: "#fefcff",
-            // ...
-            primary12: "#340c3b",
-        },
+        colors: {},
     },
     darkTheme: {
-        colors: {
-            primary1: "#1d131d",
-            // ...
-            primary12: "#fbecfc",
-        },
+        colors: {},
     },
     components: {},
 };
@@ -27,13 +18,9 @@ const config: HopeThemeConfig = {
 const App: Component = () => {
     return (
         <HopeProvider config={config}>
-            <Nav />
             <Routes>
-                <Route path="/" component={Home} />
-                <Route
-                    path="/phonetic-alphabet"
-                    component={PhoneticAlphabetQuiz}
-                />
+                <Route path="/" component={Apps} />
+                <Route path="/nato-alphabet" component={NatoAlphabetQuiz} />
             </Routes>
         </HopeProvider>
     );
