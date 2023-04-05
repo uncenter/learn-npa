@@ -275,7 +275,7 @@ const NatoAlphabetQuiz: Component = () => {
             <Nav title="NATO Alphabet Quiz" />
             <div class="flex m-10 flex-col">
                 <div class="flex flex-col gap-4 mx-6">
-                    <div class="self-center text-4xl bg-gray-200 rounded-lg p-4 font-typewriter mb-4">
+                    <div class="self-center text-4xl bg-gray-200 text-zinc-700 rounded-lg p-4 font-typewriter mb-4">
                         {word()}
                     </div>
                     <InputGroup class="flex-row">
