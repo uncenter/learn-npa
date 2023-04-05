@@ -1,5 +1,5 @@
 import type { Component } from "solid-js";
-import { createSignal, createEffect } from "solid-js";
+import { createSignal, createEffect, For } from "solid-js";
 import {
     Button,
     Input,
@@ -16,6 +16,20 @@ import {
     CheckboxGroup,
     Checkbox,
     HStack,
+    Select,
+    SelectTrigger,
+    SelectPlaceholder,
+    SelectValue,
+    SelectTag,
+    SelectTagCloseButton,
+    SelectIcon,
+    SelectContent,
+    SelectListbox,
+    SelectOptGroup,
+    SelectLabel,
+    SelectOption,
+    SelectOptionText,
+    SelectOptionIndicator,
 } from "@hope-ui/solid";
 import Nav from "../components/Nav";
 import longWordsRaw from "../data/long-words.txt?raw";
@@ -147,7 +161,7 @@ const ReferenceCard = () => {
                 colorScheme="info"
                 onClick={onOpen}
             >
-                Cheat/Reference Sheet
+                Reference Sheet
             </Button>
             <Modal centered size={"xl"} opened={isOpen()} onClose={onClose}>
                 <ModalOverlay />
@@ -207,10 +221,13 @@ const ReferenceCard = () => {
 
 const NatoAlphabetQuiz: Component = () => {
     const pastCharacters: any = {};
-    const [words, setWords] = createSignal(mergeArrays(wordLists.short));
+    const [words, setWords] = createSignal(
+        mergeArrays(wordLists.short, wordLists.medium)
+    );
     const [word, setWord] = createSignal(
         words()[Math.floor(Math.random() * words().length)].toUpperCase()
     );
+    const [bias, setBias] = createSignal(2);
 
     const [submitted, setSubmitted] = createSignal(false);
     const [text, setText] = createSignal("");
@@ -222,17 +239,35 @@ const NatoAlphabetQuiz: Component = () => {
         return count;
     }
     function newWord() {
-        const wordCounts = words().map((word) => ({
-            word,
-            count: countCommonChars(word, pastCharacters),
-        }));
+        if (bias() > 0) {
+            const wordCounts = words().map((word) => ({
+                word,
+                count: countCommonChars(word, pastCharacters),
+            }));
 
-        const sortedWords = wordCounts.sort((a, b) => a.count - b.count);
+            const sortedWords = wordCounts.sort((a, b) => a.count - b.count);
 
-        const minCount = sortedWords[0].count;
-        const minCountWords = sortedWords.filter((w) => w.count === minCount);
-        const randomIndex = Math.floor(Math.random() * minCountWords.length);
-        setWord(minCountWords[randomIndex].word.toUpperCase());
+            const minCount = sortedWords[0].count;
+            const minCountWords = sortedWords.filter(
+                (w) => w.count === minCount
+            );
+            let randomIndex = Math.floor(Math.random() * minCountWords.length);
+            const biasScore: any = {
+                1: 3, // Once every 3 words
+                2: 2, // Once every 2 words
+                3: 1, // Every word
+            };
+            const randomOrBias = Math.floor(Math.random() * biasScore[bias()]);
+            if (randomOrBias !== 0) {
+                randomIndex = Math.floor(Math.random() * words().length);
+                setWord(words()[randomIndex].toUpperCase());
+            } else {
+                setWord(minCountWords[randomIndex].word.toUpperCase());
+            }
+        } else {
+            const randomIndex = Math.floor(Math.random() * words().length);
+            setWord(words()[randomIndex].toUpperCase());
+        }
     }
     function addCharacters(word: string) {
         const characters = word.split("");
@@ -317,41 +352,82 @@ const NatoAlphabetQuiz: Component = () => {
                         </Button>
                     </InputGroup>
                 </div>
-                <h2 class="font-bold my-4 self-center text-2xl">
-                    Word lengths
-                </h2>
-                <CheckboxGroup
-                    colorScheme="info"
-                    defaultValue={["short"]}
-                    class="flex flex-row gap-4 m-auto mb-4"
-                >
-                    <HStack spacing="$5">
-                        <Checkbox
-                            value="short"
-                            onchange={(e: any) => {
-                                updateWords(e, "short");
-                            }}
+                <div class="flex flex-row my-8">
+                    <div class="flex flex-col gap-4 mx-6">
+                        <h2 class="font-bold my-4 self-center text-2xl">
+                            Word lengths
+                        </h2>
+                        <CheckboxGroup
+                            colorScheme="info"
+                            defaultValue={["short", "medium"]}
+                            class="flex gap-4 m-auto mb-4 mt-3"
                         >
-                            Short
-                        </Checkbox>
-                        <Checkbox
-                            value="medium"
-                            onchange={(e: any) => {
-                                updateWords(e, "medium");
-                            }}
-                        >
-                            Medium
-                        </Checkbox>
-                        <Checkbox
-                            value="long"
-                            onchange={(e: any) => {
-                                updateWords(e, "long");
-                            }}
-                        >
-                            Long
-                        </Checkbox>
-                    </HStack>
-                </CheckboxGroup>
+                            <HStack spacing="$5">
+                                <Checkbox
+                                    value="short"
+                                    onchange={(e: any) => {
+                                        updateWords(e, "short");
+                                    }}
+                                >
+                                    Short
+                                </Checkbox>
+                                <Checkbox
+                                    value="medium"
+                                    onchange={(e: any) => {
+                                        updateWords(e, "medium");
+                                    }}
+                                >
+                                    Medium
+                                </Checkbox>
+                                <Checkbox
+                                    value="long"
+                                    onchange={(e: any) => {
+                                        updateWords(e, "long");
+                                    }}
+                                >
+                                    Long
+                                </Checkbox>
+                            </HStack>
+                        </CheckboxGroup>
+                    </div>
+                    <div class="flex flex-col gap-4 mx-6">
+                        <h2 class="font-bold my-4 self-center text-2xl">
+                            Selection bias
+                        </h2>
+                        <Select defaultValue={2} onChange={(e) => setBias(e)}>
+                            <SelectTrigger>
+                                <SelectValue />
+                                <SelectIcon />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectListbox>
+                                    <SelectOption value={0}>
+                                        <SelectOptionText>
+                                            None
+                                        </SelectOptionText>
+                                        <SelectOptionIndicator />
+                                    </SelectOption>
+                                    <SelectOption value={1}>
+                                        <SelectOptionText>Low</SelectOptionText>
+                                        <SelectOptionIndicator />
+                                    </SelectOption>
+                                    <SelectOption value={2}>
+                                        <SelectOptionText>
+                                            Medium
+                                        </SelectOptionText>
+                                        <SelectOptionIndicator />
+                                    </SelectOption>
+                                    <SelectOption value={3}>
+                                        <SelectOptionText>
+                                            High
+                                        </SelectOptionText>
+                                        <SelectOptionIndicator />
+                                    </SelectOption>
+                                </SelectListbox>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
                 {submitted() && (
                     <AnswerCard
                         word={word}
