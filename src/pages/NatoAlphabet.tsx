@@ -161,9 +161,9 @@ const AnswerCard = (props: any) => {
                 mx="auto"
                 mt="$8"
                 display="flex"
-                fontSize="xl"
+                fontSize="$xl"
             >
-                Another?
+                Next
             </Button>
         </div>
     );
