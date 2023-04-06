@@ -52,24 +52,24 @@ const App: Component = () => {
 
     return (
         <>
-            {isMobile() ? (
+            {/* {isMobile() ? (
                 <DesktopOnly />
-            ) : (
-                <MetaProvider>
-                    <Title>Apps</Title>
-                    <HopeProvider config={config}>
-                        <NotificationsProvider placement={"bottom-start"}>
-                            <Routes>
-                                <Route path="/" component={Apps} />
-                                <Route
-                                    path="/nato-alphabet"
-                                    component={NatoAlphabetQuiz}
-                                />
-                            </Routes>
-                        </NotificationsProvider>
-                    </HopeProvider>
-                </MetaProvider>
-            )}
+            ) : ( */}
+            <MetaProvider>
+                <Title>Apps</Title>
+                <HopeProvider config={config}>
+                    <NotificationsProvider placement={"bottom-start"}>
+                        <Routes>
+                            <Route path="/" component={Apps} />
+                            <Route
+                                path="/nato-alphabet"
+                                component={NatoAlphabetQuiz}
+                            />
+                        </Routes>
+                    </NotificationsProvider>
+                </HopeProvider>
+            </MetaProvider>
+            {/* )} */}
         </>
     );
 };
