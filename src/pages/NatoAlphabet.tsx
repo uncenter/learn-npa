@@ -1,5 +1,6 @@
 import type { Component } from "solid-js";
 import { createSignal, createEffect } from "solid-js";
+import { Title, Link, Meta } from "@solidjs/meta";
 import {
     Button,
     Input,
@@ -392,6 +393,7 @@ const NatoAlphabetQuiz: Component = () => {
     return (
         <>
             <Nav title="NATO Alphabet Quiz" />
+            <Title>NATO Alphabet Quiz</Title>
             <Button
                 leftIcon={<SettingsIcon />}
                 onClick={onOpen}

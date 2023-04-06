@@ -19,6 +19,7 @@
     },
     "dependencies": {
         "@hope-ui/solid": "^0.6.7",
+        "@solidjs/meta": "^0.28.4",
         "@solidjs/router": "^0.8.2",
         "@stitches/core": "^1.2.8",
         "@suid/icons-material": "^0.5.11",

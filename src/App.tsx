@@ -1,11 +1,14 @@
 import type { Component } from "solid-js";
+import { MetaProvider, Title, Link, Meta } from "@solidjs/meta";
 import {
     HopeThemeConfig,
     HopeProvider,
     NotificationsProvider,
 } from "@hope-ui/solid";
+
 import NatoAlphabetQuiz from "./pages/NatoAlphabet";
 import Apps from "./pages/Apps";
+
 import { Route, Routes } from "@solidjs/router";
 import { createEffect, createSignal } from "solid-js";
 
@@ -52,17 +55,20 @@ const App: Component = () => {
             {isMobile() ? (
                 <DesktopOnly />
             ) : (
-                <HopeProvider config={config}>
-                    <NotificationsProvider placement={"bottom-start"}>
-                        <Routes>
-                            <Route path="/" component={Apps} />
-                            <Route
-                                path="/nato-alphabet"
-                                component={NatoAlphabetQuiz}
-                            />
-                        </Routes>
-                    </NotificationsProvider>
-                </HopeProvider>
+                <MetaProvider>
+                    <Title>Apps</Title>
+                    <HopeProvider config={config}>
+                        <NotificationsProvider placement={"bottom-start"}>
+                            <Routes>
+                                <Route path="/" component={Apps} />
+                                <Route
+                                    path="/nato-alphabet"
+                                    component={NatoAlphabetQuiz}
+                                />
+                            </Routes>
+                        </NotificationsProvider>
+                    </HopeProvider>
+                </MetaProvider>
             )}
         </>
     );
