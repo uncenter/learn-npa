@@ -15,7 +15,7 @@ interface CardProps {
 const Card = (props: CardProps) => {
     return (
         <a href={props.url} class="w-full">
-            <Box class="bg-neutral-200 rounded-lg text-center p-6 justify-end flex flex-col">
+            <Box class="bg-neutral-200 rounded-lg text-center p-6 justify-end flex flex-col dark:bg-neutral-800">
                 <h2 class="text-2xl font-bold">{props.title}</h2>
                 <p class="text-lg">{props.description}</p>
                 <img class="rounded-2xl p-2" src={props.image} />
