@@ -291,6 +291,10 @@ const NatoAlphabetQuiz: Component = () => {
     const [text, setText] = createSignal(
         localStorage.getItem("text") ? localStorage.getItem("text") : ""
     );
+    if (!submitted() && (text() as any).length > 0) {
+        setText("");
+    }
+
     function newWord() {
         function countCommonChars(word: string, characters: any) {
             let count = 0;
@@ -395,8 +399,12 @@ const NatoAlphabetQuiz: Component = () => {
     }
     const { isOpen, onOpen, onClose } = createDisclosure();
     const [isSmall, setIsSmall] = createSignal(window.innerWidth < 768);
+    const [isSuperSmall, setIsSuperSmall] = createSignal(
+        window.innerWidth < 500
+    );
     setInterval(() => {
         setIsSmall(window.innerWidth < 768);
+        setIsSuperSmall(window.innerWidth < 500);
     }, 500);
     return (
         <>
@@ -487,36 +495,60 @@ const NatoAlphabetQuiz: Component = () => {
                                     }
                                 }}
                             />
-                            <div class="flex flex-row gap-4 m-auto">
-                                <ReferenceCard />
-                                <Button
-                                    id="submit"
-                                    fontSize="$lg"
-                                    height="$14"
-                                    colorScheme="accent"
-                                    disabled={
-                                        submitted() || text()?.length === 0
-                                    }
-                                    onclick={() => {
-                                        setSubmitted(true);
-                                    }}
-                                >
-                                    Submit
-                                </Button>
-                                <Button
-                                    id="reset"
-                                    height="$14"
-                                    fontSize="$lg"
-                                    ml="$1"
-                                    colorScheme="neutral"
-                                    disabled={submitted()}
-                                    onclick={() => {
-                                        reset();
-                                    }}
-                                >
-                                    Skip
-                                </Button>
-                            </div>
+                            {!submitted() && (
+                                <>
+                                    <div class="flex flex-row gap-4 m-auto">
+                                        <ReferenceCard />
+                                        {!isSuperSmall() && (
+                                            <Button
+                                                id="submit"
+                                                fontSize="$lg"
+                                                height="$14"
+                                                colorScheme="accent"
+                                                disabled={
+                                                    submitted() ||
+                                                    text()?.length === 0
+                                                }
+                                                onclick={() => {
+                                                    setSubmitted(true);
+                                                }}
+                                            >
+                                                Submit
+                                            </Button>
+                                        )}
+                                        <Button
+                                            id="reset"
+                                            height="$14"
+                                            fontSize="$lg"
+                                            ml="$1"
+                                            colorScheme="neutral"
+                                            disabled={submitted()}
+                                            onclick={() => {
+                                                reset();
+                                            }}
+                                        >
+                                            Skip
+                                        </Button>
+                                    </div>
+                                    {isSuperSmall() && (
+                                        <Button
+                                            id="submit"
+                                            fontSize="$lg"
+                                            height="$14"
+                                            colorScheme="accent"
+                                            disabled={
+                                                submitted() ||
+                                                text()?.length === 0
+                                            }
+                                            onclick={() => {
+                                                setSubmitted(true);
+                                            }}
+                                        >
+                                            Submit
+                                        </Button>
+                                    )}
+                                </>
+                            )}
                         </>
                     )}
                 </div>
