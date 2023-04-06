@@ -391,7 +391,8 @@ const NatoAlphabetQuiz: Component = () => {
                 variant={"outline"}
                 colorScheme={"neutral"}
                 iconSpacing="0"
-                class="fixed top-4 right-4"
+                position={"fixed"}
+                class="top-4 right-4"
             />
             <div class="flex m-10 flex-col">
                 <div class="flex flex-col gap-4 mx-6">
