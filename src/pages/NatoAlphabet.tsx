@@ -1,5 +1,5 @@
 import type { Component } from "solid-js";
-import { createSignal, createEffect, For } from "solid-js";
+import { createSignal, createEffect } from "solid-js";
 import {
     Button,
     Input,
@@ -18,18 +18,32 @@ import {
     HStack,
     Select,
     SelectTrigger,
-    SelectPlaceholder,
     SelectValue,
-    SelectTag,
-    SelectTagCloseButton,
     SelectIcon,
     SelectContent,
     SelectListbox,
-    SelectOptGroup,
-    SelectLabel,
     SelectOption,
     SelectOptionText,
     SelectOptionIndicator,
+    notificationService,
+    Drawer,
+    DrawerBody,
+    DrawerCloseButton,
+    DrawerContent,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerOverlay,
+    Icon,
+    Popover,
+    PopoverTrigger,
+    PopoverAnchor,
+    PopoverContent,
+    PopoverArrow,
+    PopoverCloseButton,
+    PopoverHeader,
+    PopoverBody,
+    PopoverFooter,
+    IconButton,
 } from "@hope-ui/solid";
 import Nav from "../components/Nav";
 import longWordsRaw from "../data/long-words.txt?raw";
@@ -37,7 +51,11 @@ import medWordsRaw from "../data/med-words.txt?raw";
 import shortWordsRaw from "../data/short-words.txt?raw";
 import FuzzySet from "fuzzyset";
 
-const wordLists: Record<string, string[]> = {
+import DangerousIcon from "@suid/icons-material/Dangerous";
+import HelpIcon from "@suid/icons-material/Help";
+import SettingsIcon from "@suid/icons-material/Settings";
+
+const wordListsArray: Record<string, string[]> = {
     long: longWordsRaw.split("\n"),
     medium: medWordsRaw.split("\n"),
     short: shortWordsRaw.split("\n").filter((word) => word.length > 3),
@@ -171,8 +189,8 @@ const ReferenceCard = () => {
                     <ModalCloseButton />
                     <ModalHeader>NATO/FAA Phonetic Alphabet</ModalHeader>
                     <ModalBody>
-                        <div class="inline-block py-2 w-2/5">
-                            <table class="min-w-full text-left font-light ml-[40%]">
+                        <div class="inline-block py-2 w-2/5 text-base">
+                            <table class="min-w-full text-left font-light ml-[50%]">
                                 <tbody>
                                     {leftAlphabet.map((entry: any) => {
                                         const letter = entry[0];
@@ -222,36 +240,70 @@ const ReferenceCard = () => {
 };
 
 const NatoAlphabetQuiz: Component = () => {
-    const pastCharacters: any = {};
-    const [words, setWords] = createSignal(
-        mergeArrays(wordLists.short, wordLists.medium)
-    );
-    const [word, setWord] = createSignal(
-        words()[Math.floor(Math.random() * words().length)].toUpperCase()
-    );
-    const [bias, setBias] = createSignal(2);
-
-    const [submitted, setSubmitted] = createSignal(false);
-    const [text, setText] = createSignal("");
-    function countCommonChars(word: string, characters: any) {
-        let count = 0;
-        for (let character of word) {
-            count += characters[character.toUpperCase()] || 0;
+    const data: any = {
+        wordLists: ["short", "medium"],
+        pastCharacters: {},
+    };
+    for (let key in data) {
+        if (localStorage.getItem(key)) {
+            data[key] = JSON.parse(localStorage.getItem(key) || "");
+        } else {
+            localStorage.setItem(key, JSON.stringify(data[key]));
         }
-        return count;
     }
+    let words: string[] = [];
+    for (let list of data.wordLists) {
+        if (list.includes(undefined)) {
+            console.log(list);
+        }
+        words = mergeArrays(words, wordListsArray[list]);
+    }
+    const [word, setWord] = createSignal(
+        localStorage.getItem("word")
+            ? localStorage.getItem("word")
+            : words[Math.floor(Math.random() * words.length)].toUpperCase()
+    );
+    localStorage.setItem("word", word() as any);
+    const [bias, setBias] = createSignal(
+        localStorage.getItem("bias")
+            ? parseInt(localStorage.getItem("bias") || "")
+            : 2
+    );
+    localStorage.setItem("bias", bias().toString());
+    const [submitted, setSubmitted] = createSignal(
+        localStorage.getItem("submitted")
+            ? Boolean(JSON.parse(localStorage.getItem("submitted") || ""))
+            : false
+    );
+    localStorage.setItem("submitted", submitted().toString());
+    const [text, setText] = createSignal(
+        localStorage.getItem("text") ? localStorage.getItem("text") : ""
+    );
     function newWord() {
+        function countCommonChars(word: string, characters: any) {
+            let count = 0;
+            for (let character of word) {
+                count += characters[character.toUpperCase()] || 0;
+            }
+            return count;
+        }
+        if (words.length === 0) {
+            console.log("No words left! How did you do that?");
+            return;
+        }
         if (bias() > 0) {
-            const wordCounts = words().map((word) => ({
+            const wordCounts = words.map((word: string) => ({
                 word,
-                count: countCommonChars(word, pastCharacters),
+                count: countCommonChars(word, data.pastCharacters),
             }));
 
-            const sortedWords = wordCounts.sort((a, b) => a.count - b.count);
+            const sortedWords = wordCounts.sort(
+                (a: any, b: any) => a.count - b.count
+            );
 
             const minCount = sortedWords[0].count;
             const minCountWords = sortedWords.filter(
-                (w) => w.count === minCount
+                (w: any) => w.count === minCount
             );
             let randomIndex = Math.floor(Math.random() * minCountWords.length);
             const biasScore: any = {
@@ -261,54 +313,86 @@ const NatoAlphabetQuiz: Component = () => {
             };
             const randomOrBias = Math.floor(Math.random() * biasScore[bias()]);
             if (randomOrBias !== 0) {
-                randomIndex = Math.floor(Math.random() * words().length);
-                setWord(words()[randomIndex].toUpperCase());
+                randomIndex = Math.floor(Math.random() * words.length);
+                setWord(words[randomIndex].toUpperCase());
             } else {
                 setWord(minCountWords[randomIndex].word.toUpperCase());
             }
         } else {
-            const randomIndex = Math.floor(Math.random() * words().length);
-            setWord(words()[randomIndex].toUpperCase());
+            const randomIndex = Math.floor(Math.random() * words.length);
+            setWord(words[randomIndex].toUpperCase());
         }
+        localStorage.setItem("word", word() || "");
     }
     function addCharacters(word: string) {
         const characters = word.split("");
         for (let character of characters) {
-            if (!pastCharacters[character]) {
-                pastCharacters[character] = 1;
+            if (!data.pastCharacters[character]) {
+                data.pastCharacters[character] = 1;
             } else {
-                pastCharacters[character] += 1;
+                data.pastCharacters[character] += 1;
             }
         }
+        localStorage.setItem(
+            "pastCharacters",
+            JSON.stringify(data.pastCharacters)
+        );
     }
     createEffect(() => {
         if (submitted()) {
-            addCharacters(word());
+            addCharacters(word() || "");
+            const input = document.getElementById("input") as HTMLInputElement;
+            if (input) {
+                input.value = text() || "";
+            }
+            localStorage.setItem("submitted", "true");
         }
     });
     function reset() {
         setSubmitted(false);
+        localStorage.setItem("submitted", "false");
         newWord();
-        const input = ((
-            document.getElementById("input") as HTMLInputElement
-        ).value = "");
+        (document.getElementById("input") as HTMLInputElement).value = "";
         setText("");
     }
-    function updateWords(e: any, newWords: string) {
+    function updateWords(e: any, wordList: string) {
         if (e.target.checked) {
-            setWords(words().concat(wordLists[newWords]));
+            words = words.concat(wordListsArray[wordList]);
+            if (!data.wordLists.includes(wordList)) {
+                data.wordLists.push(wordList);
+            }
         } else {
-            setWords(
-                words().filter(
-                    (word: string) => !wordLists[newWords].includes(word)
-                )
+            if (data.wordLists.length === 1) {
+                notificationService.show({
+                    status: "warning",
+                    title: "Cannot remove all word lists!",
+                    description:
+                        "Make sure you have at least one word list selected.",
+                });
+                return;
+            }
+            words = words.filter(
+                (word: string) => !wordListsArray[wordList].includes(word)
             );
+            if (data.wordLists.includes(wordList)) {
+                data.wordLists.splice(data.wordLists.indexOf(wordList), 1);
+            }
         }
+        localStorage.setItem("wordLists", JSON.stringify(data.wordLists));
         reset();
     }
+    const { isOpen, onOpen, onClose } = createDisclosure();
     return (
         <>
             <Nav title="NATO Alphabet Quiz" />
+            <Button
+                leftIcon={<SettingsIcon />}
+                onClick={onOpen}
+                variant={"outline"}
+                colorScheme={"neutral"}
+                iconSpacing="0"
+                class="fixed top-4 right-4"
+            />
             <div class="flex m-10 flex-col">
                 <div class="flex flex-col gap-4 mx-6">
                     <div class="self-center text-4xl bg-gray-200 text-zinc-700 rounded-lg p-4 font-typewriter mb-4">
@@ -322,7 +406,10 @@ const NatoAlphabetQuiz: Component = () => {
                             class="uppercase text-2xl"
                             disabled={submitted()}
                             size="lg"
-                            oninput={(e) => setText(e.target.value)}
+                            oninput={(e) =>
+                                setText(e.target.value) &&
+                                localStorage.setItem("text", e.target.value)
+                            }
                             onkeypress={(e) => {
                                 if (e.key === "Enter") {
                                     setSubmitted(true);
@@ -334,7 +421,7 @@ const NatoAlphabetQuiz: Component = () => {
                                 id="submit"
                                 class="h-full text-xl"
                                 colorScheme="accent"
-                                disabled={submitted() || text().length === 0}
+                                disabled={submitted() || text()?.length === 0}
                                 onclick={() => {
                                     setSubmitted(true);
                                 }}
@@ -356,90 +443,172 @@ const NatoAlphabetQuiz: Component = () => {
                         </Button>
                     </InputGroup>
                 </div>
-                <div class="flex flex-row my-8">
-                    <div class="flex flex-col gap-4 mx-6">
-                        <h2 class="font-bold my-4 self-center text-2xl">
-                            Word lengths
-                        </h2>
-                        <CheckboxGroup
-                            colorScheme="info"
-                            defaultValue={["short", "medium"]}
-                            class="flex gap-4 m-auto mb-4 mt-3"
-                        >
-                            <HStack spacing="$5">
-                                <Checkbox
-                                    value="short"
-                                    onchange={(e: any) => {
-                                        updateWords(e, "short");
-                                    }}
-                                >
-                                    Short
-                                </Checkbox>
-                                <Checkbox
-                                    value="medium"
-                                    onchange={(e: any) => {
-                                        updateWords(e, "medium");
-                                    }}
-                                >
-                                    Medium
-                                </Checkbox>
-                                <Checkbox
-                                    value="long"
-                                    onchange={(e: any) => {
-                                        updateWords(e, "long");
-                                    }}
-                                >
-                                    Long
-                                </Checkbox>
-                            </HStack>
-                        </CheckboxGroup>
-                    </div>
-                    <div class="flex flex-col gap-4 mx-6">
-                        <h2 class="font-bold my-4 self-center text-2xl">
-                            Selection bias
-                        </h2>
-                        <Select defaultValue={2} onChange={(e) => setBias(e)}>
-                            <SelectTrigger>
-                                <SelectValue />
-                                <SelectIcon />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectListbox>
-                                    <SelectOption value={0}>
-                                        <SelectOptionText>
-                                            None
-                                        </SelectOptionText>
-                                        <SelectOptionIndicator />
-                                    </SelectOption>
-                                    <SelectOption value={1}>
-                                        <SelectOptionText>Low</SelectOptionText>
-                                        <SelectOptionIndicator />
-                                    </SelectOption>
-                                    <SelectOption value={2}>
-                                        <SelectOptionText>
-                                            Medium
-                                        </SelectOptionText>
-                                        <SelectOptionIndicator />
-                                    </SelectOption>
-                                    <SelectOption value={3}>
-                                        <SelectOptionText>
-                                            High
-                                        </SelectOptionText>
-                                        <SelectOptionIndicator />
-                                    </SelectOption>
-                                </SelectListbox>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                </div>
+                <Drawer opened={isOpen()} placement="right" onClose={onClose}>
+                    <DrawerOverlay />
+                    <DrawerContent>
+                        <DrawerCloseButton />
+                        <DrawerBody>
+                            <div class="flex flex-col mx-4 gap-6">
+                                <div>
+                                    <h2 class="font-bold my-4 self-center text-2xl">
+                                        Word length
+                                    </h2>
+                                    <CheckboxGroup
+                                        colorScheme="info"
+                                        defaultValue={JSON.parse(
+                                            localStorage.getItem("wordLists") ||
+                                                "[]"
+                                        )}
+                                        class="flex gap-4 m-auto"
+                                    >
+                                        <HStack spacing="$5" mt="$4">
+                                            <Checkbox
+                                                id="short"
+                                                value="short"
+                                                onchange={(e: any) => {
+                                                    updateWords(e, "short");
+                                                }}
+                                            >
+                                                Short
+                                            </Checkbox>
+                                            <Checkbox
+                                                id="medium"
+                                                value="medium"
+                                                onchange={(e: any) => {
+                                                    updateWords(e, "medium");
+                                                }}
+                                            >
+                                                Medium
+                                            </Checkbox>
+                                            <Checkbox
+                                                id="long"
+                                                value="long"
+                                                onchange={(e: any) => {
+                                                    updateWords(e, "long");
+                                                }}
+                                            >
+                                                Long
+                                            </Checkbox>
+                                        </HStack>
+                                    </CheckboxGroup>
+                                </div>
+                                <div>
+                                    <h2 class="font-bold my-4 self-center text-2xl">
+                                        <span>Smart selection</span>
+                                        <Popover triggerMode="click">
+                                            <PopoverTrigger
+                                                as={IconButton}
+                                                variant="ghost"
+                                                colorScheme="info"
+                                                aria-label="Help"
+                                                ml="$2"
+                                                icon={<HelpIcon />}
+                                            ></PopoverTrigger>
+                                            <PopoverContent>
+                                                <PopoverArrow />
+                                                <PopoverCloseButton />
+                                                <PopoverBody>
+                                                    <p class="text-sm">
+                                                        With a higher "smart
+                                                        selection" bias,
+                                                        selected words will have
+                                                        a more even distribution
+                                                        of characters. Without,
+                                                        words will be selected
+                                                        at random, leaning
+                                                        towards words with
+                                                        common characters.
+                                                    </p>
+                                                </PopoverBody>
+                                            </PopoverContent>
+                                        </Popover>
+                                    </h2>
+                                    <Select
+                                        defaultValue={bias()}
+                                        onChange={(e) =>
+                                            setBias(e) &&
+                                            localStorage.setItem("bias", e)
+                                        }
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                            <SelectIcon />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectListbox>
+                                                <SelectOption value={0}>
+                                                    <SelectOptionText>
+                                                        None
+                                                    </SelectOptionText>
+                                                    <SelectOptionIndicator />
+                                                </SelectOption>
+                                                <SelectOption value={1}>
+                                                    <SelectOptionText>
+                                                        Low
+                                                    </SelectOptionText>
+                                                    <SelectOptionIndicator />
+                                                </SelectOption>
+                                                <SelectOption value={2}>
+                                                    <SelectOptionText>
+                                                        Medium
+                                                    </SelectOptionText>
+                                                    <SelectOptionIndicator />
+                                                </SelectOption>
+                                                <SelectOption value={3}>
+                                                    <SelectOptionText>
+                                                        High
+                                                    </SelectOptionText>
+                                                    <SelectOptionIndicator />
+                                                </SelectOption>
+                                            </SelectListbox>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                        </DrawerBody>
+                        <DrawerFooter>
+                            <Button
+                                leftIcon={
+                                    <Icon
+                                        as={(<DangerousIcon />) as any}
+                                        bgColor={"#e53e3e"}
+                                    />
+                                }
+                                variant="dashed"
+                                borderColor={"#e53e3e"}
+                                color={"#e53e3e"}
+                                _hover={{
+                                    borderColor: "#e53e3e",
+                                    background: "#e53e3e",
+                                    color: "white",
+                                }}
+                                mr="$3"
+                                onclick={() => {
+                                    localStorage.clear();
+                                    window.location.reload();
+                                }}
+                            >
+                                Reset
+                            </Button>
+                            <Button
+                                variant="solid"
+                                mr="$3"
+                                colorScheme="success"
+                                onClick={onClose}
+                            >
+                                Close
+                            </Button>
+                        </DrawerFooter>
+                    </DrawerContent>
+                </Drawer>
                 {submitted() && (
                     <AnswerCard
                         word={word}
                         input={text()}
-                        answer={phoneticWords(word()).join(" ")}
+                        answer={phoneticWords(word() as any).join(" ")}
                         correct={isCorrect(
-                            text().split(" "),
-                            phoneticWords(word())
+                            (text() || "").split(" "),
+                            phoneticWords(word() as any)
                         )}
                         reset={reset}
                     />
