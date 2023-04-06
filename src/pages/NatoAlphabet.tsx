@@ -133,7 +133,7 @@ function mergeArrays(...arrays: any[]) {
 const AnswerCard = (props: any) => {
     return (
         <div>
-            <div class={`rounded-lg shadow-lg mt-4 text-center mx-6 uppercase`}>
+            <div class="rounded-lg shadow-lg mt-4 text-center mx-6 uppercase">
                 <h2
                     class={`flex font-bold ${
                         props.correct ? "bg-green-500" : "bg-[#b71c1c]"
@@ -157,9 +157,11 @@ const AnswerCard = (props: any) => {
                     props.reset();
                 }}
                 height="$14"
-                colorScheme={"accent"}
-                m={"auto"}
-                class="flex mt-8 text-xl"
+                colorScheme="accent"
+                mx="auto"
+                mt="$8"
+                display="flex"
+                fontSize="xl"
             >
                 Another?
             </Button>
@@ -178,13 +180,14 @@ const ReferenceCard = () => {
         <>
             <Button
                 height="$14"
-                class="text-xl mr-1"
+                fontSize="$xl"
+                mr="1"
                 colorScheme="info"
                 onClick={onOpen}
             >
-                Reference Sheet
+                Reference
             </Button>
-            <Modal centered size={"xl"} opened={isOpen()} onClose={onClose}>
+            <Modal centered size="xl" opened={isOpen()} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
                     <ModalCloseButton />
@@ -197,7 +200,7 @@ const ReferenceCard = () => {
                                         const letter = entry[0];
                                         const phonetic = entry[1];
                                         return (
-                                            <tr class={`border-none`}>
+                                            <tr class="border-none">
                                                 <th class="text-right px-4 py-2">
                                                     {letter}
                                                 </th>
@@ -242,7 +245,7 @@ const ReferenceCard = () => {
 
 const NatoAlphabetQuiz: Component = () => {
     const data: any = {
-        wordLists: ["short", "medium"],
+        wordLists: ["short"],
         pastCharacters: {},
     };
     for (let key in data) {
@@ -393,19 +396,21 @@ const NatoAlphabetQuiz: Component = () => {
                 colorScheme={"neutral"}
                 iconSpacing="0"
                 position={"fixed"}
-                class="top-4 right-4"
+                top="$4"
+                right="$4"
             />
             <div class="flex m-10 flex-col">
                 <div class="flex flex-col gap-4 mx-6">
                     <div class="self-center text-4xl bg-gray-200 text-zinc-700 rounded-lg p-4 font-typewriter mb-4">
                         {word()}
                     </div>
-                    <InputGroup class="flex-row">
+                    <InputGroup display="flex" flexDirection="row">
                         <ReferenceCard />
                         <Input
                             id="input"
                             height="$14"
-                            class="uppercase text-2xl"
+                            fontSize="$2xl"
+                            textTransform="uppercase"
                             disabled={submitted()}
                             size="lg"
                             oninput={(e) =>
@@ -421,7 +426,7 @@ const NatoAlphabetQuiz: Component = () => {
                         <InputRightAddon ps={0} pe={0}>
                             <Button
                                 id="submit"
-                                class="text-xl"
+                                fontSize="$xl"
                                 height="$full"
                                 colorScheme="accent"
                                 disabled={submitted() || text()?.length === 0}
@@ -462,7 +467,9 @@ const NatoAlphabetQuiz: Component = () => {
                                             localStorage.getItem("wordLists") ||
                                                 "[]"
                                         )}
-                                        class="flex gap-4 m-auto"
+                                        display="flex"
+                                        gap="$4"
+                                        m="auto"
                                     >
                                         <HStack spacing="$5" mt="$4">
                                             <Checkbox
