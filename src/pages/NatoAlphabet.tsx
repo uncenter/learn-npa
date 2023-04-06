@@ -131,6 +131,8 @@ function mergeArrays(...arrays: any[]) {
 }
 
 const AnswerCard = (props: any) => {
+    let nextButton: any;
+    setTimeout(() => nextButton.focus());
     return (
         <div>
             <div class="rounded-lg shadow-lg mt-4 text-center mx-6 uppercase">
@@ -162,6 +164,7 @@ const AnswerCard = (props: any) => {
                 mt="$8"
                 display="flex"
                 fontSize="$lg"
+                ref={nextButton}
             >
                 Next
             </Button>
