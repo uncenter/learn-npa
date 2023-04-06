@@ -161,7 +161,7 @@ const AnswerCard = (props: any) => {
                 mx="auto"
                 mt="$8"
                 display="flex"
-                fontSize="$xl"
+                fontSize="$lg"
             >
                 Next
             </Button>
@@ -180,8 +180,8 @@ const ReferenceCard = () => {
         <>
             <Button
                 height="$14"
-                fontSize="$xl"
-                mr="1"
+                fontSize="$lg"
+                mr="$1"
                 colorScheme="info"
                 onClick={onOpen}
             >
@@ -426,7 +426,7 @@ const NatoAlphabetQuiz: Component = () => {
                         <InputRightAddon ps={0} pe={0}>
                             <Button
                                 id="submit"
-                                fontSize="$xl"
+                                fontSize="$lg"
                                 height="$full"
                                 colorScheme="accent"
                                 disabled={submitted() || text()?.length === 0}
@@ -440,7 +440,8 @@ const NatoAlphabetQuiz: Component = () => {
                         <Button
                             id="reset"
                             height="$14"
-                            class="text-xl ml-1"
+                            fontSize="$lg"
+                            ml="$1"
                             colorScheme="neutral"
                             disabled={submitted()}
                             onclick={() => {
