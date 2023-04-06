@@ -134,9 +134,13 @@ function mergeArrays(...arrays: any[]) {
 const AnswerCard = (props: any) => {
     let nextButton: any;
     setTimeout(() => nextButton.focus());
+    const [isSmall, setIsSmall] = createSignal(window.innerWidth < 768);
+    setInterval(() => {
+        setIsSmall(window.innerWidth < 768);
+    }, 500);
     return (
         <div>
-            <div class="rounded-lg shadow-lg mt-4 text-center mx-6 uppercase">
+            <div class="rounded-lg shadow-lg mt-8 text-center mx-6 uppercase">
                 <h2
                     class={`flex font-bold ${
                         props.correct ? "bg-green-500" : "bg-[#b71c1c]"
@@ -144,7 +148,7 @@ const AnswerCard = (props: any) => {
                 >
                     {props.word}
                 </h2>
-                <div class="p-6 flex text-lg">
+                <div class={`p-6 flex text-lg ${isSmall() ? "flex-col" : ""}`}>
                     <div class=" block basis-0 grow shrink p-3">
                         <h3 class="mb-2">Your answer</h3>
                         <p class="font-bold text-2xl">{props.input || "N/A"}</p>
@@ -189,7 +193,7 @@ const ReferenceCard = () => {
                 colorScheme="info"
                 onClick={onOpen}
             >
-                Reference
+                Lookup
             </Button>
             <Modal centered size="xl" opened={isOpen()} onClose={onClose}>
                 <ModalOverlay />
@@ -390,6 +394,10 @@ const NatoAlphabetQuiz: Component = () => {
         reset();
     }
     const { isOpen, onOpen, onClose } = createDisclosure();
+    const [isSmall, setIsSmall] = createSignal(window.innerWidth < 768);
+    setInterval(() => {
+        setIsSmall(window.innerWidth < 768);
+    }, 500);
     return (
         <>
             <Nav title="NATO Alphabet Quiz" />
@@ -409,53 +417,108 @@ const NatoAlphabetQuiz: Component = () => {
                     <div class="self-center text-4xl bg-gray-200 text-zinc-700 rounded-lg p-4 font-typewriter mb-4">
                         {word()}
                     </div>
-                    <InputGroup display="flex" flexDirection="row">
-                        <ReferenceCard />
-                        <Input
-                            id="input"
-                            height="$14"
-                            fontSize="$2xl"
-                            textTransform="uppercase"
-                            disabled={submitted()}
-                            size="lg"
-                            oninput={(e) =>
-                                setText(e.target.value) &&
-                                localStorage.setItem("text", e.target.value)
-                            }
-                            onkeypress={(e) => {
-                                if (e.key === "Enter") {
-                                    setSubmitted(true);
+                    {!isSmall() && (
+                        <InputGroup display="flex" flexDirection="row">
+                            <ReferenceCard />
+                            <Input
+                                id="input"
+                                height="$14"
+                                fontSize="$2xl"
+                                textTransform="uppercase"
+                                disabled={submitted()}
+                                size="lg"
+                                oninput={(e) =>
+                                    setText(e.target.value) &&
+                                    localStorage.setItem("text", e.target.value)
                                 }
-                            }}
-                        />
-                        <InputRightAddon ps={0} pe={0}>
+                                onkeypress={(e) => {
+                                    if (e.key === "Enter") {
+                                        setSubmitted(true);
+                                    }
+                                }}
+                            />
+                            <InputRightAddon ps={0} pe={0}>
+                                <Button
+                                    id="submit"
+                                    fontSize="$lg"
+                                    height="$full"
+                                    colorScheme="accent"
+                                    disabled={
+                                        submitted() || text()?.length === 0
+                                    }
+                                    onclick={() => {
+                                        setSubmitted(true);
+                                    }}
+                                >
+                                    Check
+                                </Button>
+                            </InputRightAddon>
                             <Button
-                                id="submit"
+                                id="reset"
+                                height="$14"
                                 fontSize="$lg"
-                                height="$full"
-                                colorScheme="accent"
-                                disabled={submitted() || text()?.length === 0}
+                                ml="$1"
+                                colorScheme="neutral"
+                                disabled={submitted()}
                                 onclick={() => {
-                                    setSubmitted(true);
+                                    reset();
                                 }}
                             >
-                                Check
+                                Skip
                             </Button>
-                        </InputRightAddon>
-                        <Button
-                            id="reset"
-                            height="$14"
-                            fontSize="$lg"
-                            ml="$1"
-                            colorScheme="neutral"
-                            disabled={submitted()}
-                            onclick={() => {
-                                reset();
-                            }}
-                        >
-                            Skip
-                        </Button>
-                    </InputGroup>
+                        </InputGroup>
+                    )}
+                    {isSmall() && (
+                        <>
+                            <Input
+                                id="input"
+                                height="$14"
+                                fontSize="$2xl"
+                                textTransform="uppercase"
+                                disabled={submitted()}
+                                size="lg"
+                                oninput={(e) =>
+                                    setText(e.target.value) &&
+                                    localStorage.setItem("text", e.target.value)
+                                }
+                                onkeypress={(e) => {
+                                    if (e.key === "Enter") {
+                                        setSubmitted(true);
+                                    }
+                                }}
+                            />
+                            <div class="flex flex-row gap-4 m-auto">
+                                <ReferenceCard />
+                                <Button
+                                    id="submit"
+                                    fontSize="$lg"
+                                    height="$14"
+                                    colorScheme="accent"
+                                    disabled={
+                                        submitted() || text()?.length === 0
+                                    }
+                                    onclick={() => {
+                                        setSubmitted(true);
+                                    }}
+                                >
+                                    Submit
+                                </Button>
+                                <Button
+                                    id="reset"
+                                    height="$14"
+                                    fontSize="$lg"
+                                    ml="$1"
+                                    colorScheme="neutral"
+                                    disabled={submitted()}
+                                    onclick={() => {
+                                        reset();
+                                    }}
+                                >
+                                    Skip
+                                </Button>
+                            </div>
+                        </>
+                    )}
                 </div>
                 <Drawer opened={isOpen()} placement="right" onClose={onClose}>
                     <DrawerOverlay />
