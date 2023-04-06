@@ -1,4 +1,5 @@
 import type { Component } from "solid-js";
+import { createSignal } from "solid-js";
 import { SimpleGrid, Box, Anchor } from "@hope-ui/solid";
 import PageHeader from "../components/PageHeader";
 import Nav from "../components/Nav";
@@ -34,7 +35,7 @@ const Home: Component = () => {
                 </div>
                 <SimpleGrid
                     gap="40px"
-                    columns={{ "@initial": 2, "@md": 3 }}
+                    columns={{ "@initial": 1, "@md": 2, "@lg": 3 }}
                     class="mt-8"
                 >
                     <Card
