@@ -158,7 +158,8 @@ const AnswerCard = (props: any) => {
                 }}
                 height="$14"
                 colorScheme={"accent"}
-                class="flex mt-8 text-xl m-auto"
+                m={"auto"}
+                class="flex mt-8 text-xl"
             >
                 Another?
             </Button>
@@ -417,10 +418,11 @@ const NatoAlphabetQuiz: Component = () => {
                                 }
                             }}
                         />
-                        <InputRightAddon class="ps-0 pe-0">
+                        <InputRightAddon ps={0} pe={0}>
                             <Button
                                 id="submit"
-                                class="h-full text-xl"
+                                class="text-xl"
+                                height="$full"
                                 colorScheme="accent"
                                 disabled={submitted() || text()?.length === 0}
                                 onclick={() => {
