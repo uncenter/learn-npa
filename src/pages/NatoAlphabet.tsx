@@ -607,7 +607,7 @@ const NatoAlphabetQuiz: Component = () => {
                                 colorScheme="success"
                                 onClick={onClose}
                             >
-                                Close
+                                Save & Close
                             </Button>
                         </DrawerFooter>
                     </DrawerContent>
