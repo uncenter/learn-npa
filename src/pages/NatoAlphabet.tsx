@@ -52,12 +52,12 @@ import coverImg from "../assets/nato-alphabet.png";
 import DangerousIcon from "@suid/icons-material/Dangerous";
 import HelpIcon from "@suid/icons-material/Help";
 import SettingsIcon from "@suid/icons-material/Settings";
-import App from "../components/Page";
 
 const NatoAlphabetQuizMeta = {
     title: "NATO Alphabet Quiz",
     url: "/nato-alphabet",
     image: coverImg,
+    alt: "Screenshot of the NATO Alphabet Quiz app.",
     description:
         "A quiz to help you learn and practice the NATO phonetic alphabet.",
     date: "April 2023",

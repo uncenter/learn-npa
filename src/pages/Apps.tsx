@@ -23,6 +23,7 @@ interface AppProps {
     title: string;
     description: string;
     image: string;
+    alt: string;
     github: string;
     url: string;
     tools: string[];
@@ -34,7 +35,13 @@ const Item = (props: AppProps) => {
         <Box class="bg-neutral-200 rounded-lg text-center p-6 justify-end flex flex-col dark:bg-neutral-800 cursor-pointer">
             <h2 class="text-2xl font-bold">{props.title}</h2>
             <p class="text-lg">{props.description}</p>
-            <img class="rounded-2xl p-2" src={props.image} />
+            <img
+                class="rounded-2xl p-2"
+                src={props.image}
+                width="100%"
+                height="100%"
+                alt={props.alt}
+            />
         </Box>
     );
 };
@@ -84,6 +91,9 @@ const Card = (props: AppProps) => {
                         <img
                             class="rounded-lg self-center mt-4"
                             src={props.image}
+                            alt={props.alt}
+                            width="100%"
+                            height="100%"
                         />
                     </ModalBody>
                     <ModalFooter class="flex flex-row justify-between">
