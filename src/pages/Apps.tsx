@@ -96,7 +96,10 @@ const Card = (props: AppProps) => {
                             height="100%"
                         />
                     </ModalBody>
-                    <ModalFooter class="flex flex-row justify-between">
+                    <ModalFooter
+                        class="flex flex-row"
+                        justifyContent="space-between"
+                    >
                         <a href={props.url}>
                             <Button
                                 leftIcon={<OpenInNew />}
