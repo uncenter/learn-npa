@@ -1,6 +1,6 @@
 import type { Component } from "solid-js";
 import { createSignal, createEffect } from "solid-js";
-import { Title, Link, Meta } from "@solidjs/meta";
+import Page from "../components/Page";
 import {
     Button,
     Input,
@@ -32,29 +32,38 @@ import {
     DrawerCloseButton,
     DrawerContent,
     DrawerFooter,
-    DrawerHeader,
     DrawerOverlay,
     Icon,
     Popover,
     PopoverTrigger,
-    PopoverAnchor,
     PopoverContent,
     PopoverArrow,
     PopoverCloseButton,
-    PopoverHeader,
     PopoverBody,
-    PopoverFooter,
     IconButton,
 } from "@hope-ui/solid";
-import Nav from "../components/Nav";
 import longWordsRaw from "../data/long-words.txt?raw";
 import medWordsRaw from "../data/med-words.txt?raw";
 import shortWordsRaw from "../data/short-words.txt?raw";
 import FuzzySet from "fuzzyset";
 
+import coverImg from "../assets/nato-alphabet.png";
+
 import DangerousIcon from "@suid/icons-material/Dangerous";
 import HelpIcon from "@suid/icons-material/Help";
 import SettingsIcon from "@suid/icons-material/Settings";
+import App from "../components/Page";
+
+const NatoAlphabetQuizMeta = {
+    title: "NATO Alphabet Quiz",
+    url: "/nato-alphabet",
+    image: coverImg,
+    description:
+        "A quiz to help you learn and practice the NATO phonetic alphabet.",
+    date: "April 2023",
+    tools: ["SolidJS", "TypeScript", "TailwindCSS", "HopeUI"],
+    github: "https://github.com/uncenter/apps/tree/main/src/pages/NatoAlphabet.tsx",
+};
 
 const wordListsArray: Record<string, string[]> = {
     long: longWordsRaw.split("\n"),
@@ -407,130 +416,94 @@ const NatoAlphabetQuiz: Component = () => {
         setIsSuperSmall(window.innerWidth < 500);
     }, 500);
     return (
-        <>
-            <Nav title="NATO Alphabet Quiz" />
-            <Title>NATO Alphabet Quiz</Title>
+        <Page title={NatoAlphabetQuizMeta.title}>
             <Button
                 leftIcon={<SettingsIcon />}
                 onClick={onOpen}
                 variant={"outline"}
                 colorScheme={"neutral"}
                 iconSpacing="0"
-                position={"fixed"}
-                top="$4"
-                right="$4"
+                position="fixed"
+                top="$5"
+                right="$8"
             />
-            <div class="flex m-10 flex-col">
-                <div class="flex flex-col gap-4 mx-6">
-                    <div class="self-center text-4xl bg-gray-200 text-zinc-700 rounded-lg p-4 font-typewriter mb-4">
-                        {word()}
-                    </div>
-                    {!isSmall() && (
-                        <InputGroup display="flex" flexDirection="row">
-                            <ReferenceCard />
-                            <Input
-                                id="input"
-                                height="$14"
-                                fontSize="$2xl"
-                                textTransform="uppercase"
-                                disabled={submitted()}
-                                size="lg"
-                                oninput={(e) =>
-                                    setText(e.target.value) &&
-                                    localStorage.setItem("text", e.target.value)
+            <div class="flex flex-col gap-4 mx-6">
+                <div class="self-center text-4xl bg-gray-200 text-zinc-700 rounded-lg p-4 font-typewriter mb-4">
+                    <span>{word()}</span>
+                </div>
+                {!isSmall() && (
+                    <InputGroup display="flex" flexDirection="row">
+                        <ReferenceCard />
+                        <Input
+                            id="input"
+                            height="$14"
+                            fontSize="$2xl"
+                            textTransform="uppercase"
+                            disabled={submitted()}
+                            size="lg"
+                            oninput={(e) =>
+                                setText(e.target.value) &&
+                                localStorage.setItem("text", e.target.value)
+                            }
+                            onkeypress={(e) => {
+                                if (e.key === "Enter") {
+                                    setSubmitted(true);
                                 }
-                                onkeypress={(e) => {
-                                    if (e.key === "Enter") {
-                                        setSubmitted(true);
-                                    }
-                                }}
-                            />
-                            <InputRightAddon ps={0} pe={0}>
-                                <Button
-                                    id="submit"
-                                    fontSize="$lg"
-                                    height="$full"
-                                    colorScheme="accent"
-                                    disabled={
-                                        submitted() || text()?.length === 0
-                                    }
-                                    onclick={() => {
-                                        setSubmitted(true);
-                                    }}
-                                >
-                                    Check
-                                </Button>
-                            </InputRightAddon>
+                            }}
+                        />
+                        <InputRightAddon ps={0} pe={0}>
                             <Button
-                                id="reset"
-                                height="$14"
+                                id="submit"
                                 fontSize="$lg"
-                                ml="$1"
-                                colorScheme="neutral"
-                                disabled={submitted()}
+                                height="$full"
+                                colorScheme="accent"
+                                disabled={submitted() || text()?.length === 0}
                                 onclick={() => {
-                                    reset();
+                                    setSubmitted(true);
                                 }}
                             >
-                                Skip
+                                Check
                             </Button>
-                        </InputGroup>
-                    )}
-                    {isSmall() && (
-                        <>
-                            <Input
-                                id="input"
-                                height="$14"
-                                fontSize="$2xl"
-                                textTransform="uppercase"
-                                disabled={submitted()}
-                                size="lg"
-                                oninput={(e) =>
-                                    setText(e.target.value) &&
-                                    localStorage.setItem("text", e.target.value)
+                        </InputRightAddon>
+                        <Button
+                            id="reset"
+                            height="$14"
+                            fontSize="$lg"
+                            ml="$1"
+                            colorScheme="neutral"
+                            disabled={submitted()}
+                            onclick={() => {
+                                reset();
+                            }}
+                        >
+                            Skip
+                        </Button>
+                    </InputGroup>
+                )}
+                {isSmall() && (
+                    <>
+                        <Input
+                            id="input"
+                            height="$14"
+                            fontSize="$2xl"
+                            textTransform="uppercase"
+                            disabled={submitted()}
+                            size="lg"
+                            oninput={(e) =>
+                                setText(e.target.value) &&
+                                localStorage.setItem("text", e.target.value)
+                            }
+                            onkeypress={(e) => {
+                                if (e.key === "Enter") {
+                                    setSubmitted(true);
                                 }
-                                onkeypress={(e) => {
-                                    if (e.key === "Enter") {
-                                        setSubmitted(true);
-                                    }
-                                }}
-                            />
-                            {!submitted() && (
-                                <>
-                                    <div class="flex flex-row gap-4 m-auto">
-                                        <ReferenceCard />
-                                        {!isSuperSmall() && (
-                                            <Button
-                                                id="submit"
-                                                fontSize="$lg"
-                                                height="$14"
-                                                colorScheme="accent"
-                                                disabled={
-                                                    submitted() ||
-                                                    text()?.length === 0
-                                                }
-                                                onclick={() => {
-                                                    setSubmitted(true);
-                                                }}
-                                            >
-                                                Submit
-                                            </Button>
-                                        )}
-                                        <Button
-                                            id="reset"
-                                            height="$14"
-                                            fontSize="$lg"
-                                            ml="$1"
-                                            colorScheme="neutral"
-                                            disabled={submitted()}
-                                            onclick={() => {
-                                                reset();
-                                            }}
-                                        >
-                                            Skip
-                                        </Button>
-                                    </div>
-                                    {isSuperSmall() && (
+                            }}
+                        />
+                        {!submitted() && (
+                            <>
+                                <div class="flex flex-row gap-4 m-auto">
+                                    <ReferenceCard />
+                                    {!isSuperSmall() && (
                                         <Button
                                             id="submit"
                                             fontSize="$lg"
@@ -547,186 +520,215 @@ const NatoAlphabetQuiz: Component = () => {
                                             Submit
                                         </Button>
                                     )}
-                                </>
-                            )}
-                        </>
-                    )}
-                </div>
-                <Drawer opened={isOpen()} placement="right" onClose={onClose}>
-                    <DrawerOverlay />
-                    <DrawerContent>
-                        <DrawerCloseButton />
-                        <DrawerBody>
-                            <div class="flex flex-col mx-4 gap-6">
-                                <div>
-                                    <h2 class="font-bold my-4 self-center text-2xl">
-                                        Word length
-                                    </h2>
-                                    <CheckboxGroup
-                                        colorScheme="info"
-                                        defaultValue={JSON.parse(
-                                            localStorage.getItem("wordLists") ||
-                                                "[]"
-                                        )}
-                                        display="flex"
-                                        gap="$4"
-                                        m="auto"
+                                    <Button
+                                        id="reset"
+                                        height="$14"
+                                        fontSize="$lg"
+                                        ml="$1"
+                                        colorScheme="neutral"
+                                        disabled={submitted()}
+                                        onclick={() => {
+                                            reset();
+                                        }}
                                     >
-                                        <HStack spacing="$5" mt="$4">
-                                            <Checkbox
-                                                id="short"
-                                                value="short"
-                                                onchange={(e: any) => {
-                                                    updateWords(e, "short");
-                                                }}
-                                            >
-                                                Short
-                                            </Checkbox>
-                                            <Checkbox
-                                                id="medium"
-                                                value="medium"
-                                                onchange={(e: any) => {
-                                                    updateWords(e, "medium");
-                                                }}
-                                            >
-                                                Medium
-                                            </Checkbox>
-                                            <Checkbox
-                                                id="long"
-                                                value="long"
-                                                onchange={(e: any) => {
-                                                    updateWords(e, "long");
-                                                }}
-                                            >
-                                                Long
-                                            </Checkbox>
-                                        </HStack>
-                                    </CheckboxGroup>
+                                        Skip
+                                    </Button>
                                 </div>
-                                <div>
-                                    <h2 class="font-bold my-4 self-center text-2xl">
-                                        <span>Smart selection</span>
-                                        <Popover triggerMode="click">
-                                            <PopoverTrigger
-                                                as={IconButton}
-                                                variant="ghost"
-                                                colorScheme="info"
-                                                aria-label="Help"
-                                                ml="$2"
-                                                icon={<HelpIcon />}
-                                            ></PopoverTrigger>
-                                            <PopoverContent>
-                                                <PopoverArrow />
-                                                <PopoverCloseButton />
-                                                <PopoverBody>
-                                                    <p class="text-sm">
-                                                        With a higher "smart
-                                                        selection" bias,
-                                                        selected words will have
-                                                        a more even distribution
-                                                        of characters. Without,
-                                                        words will be selected
-                                                        at random, leaning
-                                                        towards words with
-                                                        common characters.
-                                                    </p>
-                                                </PopoverBody>
-                                            </PopoverContent>
-                                        </Popover>
-                                    </h2>
-                                    <Select
-                                        defaultValue={bias()}
-                                        onChange={(e) =>
-                                            setBias(e) &&
-                                            localStorage.setItem("bias", e)
+                                {isSuperSmall() && (
+                                    <Button
+                                        id="submit"
+                                        fontSize="$lg"
+                                        height="$14"
+                                        colorScheme="accent"
+                                        disabled={
+                                            submitted() || text()?.length === 0
                                         }
+                                        onclick={() => {
+                                            setSubmitted(true);
+                                        }}
                                     >
-                                        <SelectTrigger>
-                                            <SelectValue />
-                                            <SelectIcon />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectListbox>
-                                                <SelectOption value={0}>
-                                                    <SelectOptionText>
-                                                        None
-                                                    </SelectOptionText>
-                                                    <SelectOptionIndicator />
-                                                </SelectOption>
-                                                <SelectOption value={1}>
-                                                    <SelectOptionText>
-                                                        Low
-                                                    </SelectOptionText>
-                                                    <SelectOptionIndicator />
-                                                </SelectOption>
-                                                <SelectOption value={2}>
-                                                    <SelectOptionText>
-                                                        Medium
-                                                    </SelectOptionText>
-                                                    <SelectOptionIndicator />
-                                                </SelectOption>
-                                                <SelectOption value={3}>
-                                                    <SelectOptionText>
-                                                        High
-                                                    </SelectOptionText>
-                                                    <SelectOptionIndicator />
-                                                </SelectOption>
-                                            </SelectListbox>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
-                        </DrawerBody>
-                        <DrawerFooter>
-                            <Button
-                                leftIcon={
-                                    <Icon
-                                        as={(<DangerousIcon />) as any}
-                                        bgColor={"#e53e3e"}
-                                    />
-                                }
-                                variant="dashed"
-                                borderColor={"#e53e3e"}
-                                color={"#e53e3e"}
-                                _hover={{
-                                    borderColor: "#e53e3e",
-                                    background: "#e53e3e",
-                                    color: "white",
-                                }}
-                                mr="$3"
-                                onclick={() => {
-                                    localStorage.clear();
-                                    window.location.reload();
-                                }}
-                            >
-                                Reset
-                            </Button>
-                            <Button
-                                variant="solid"
-                                mr="$3"
-                                colorScheme="success"
-                                onClick={onClose}
-                            >
-                                Save & Close
-                            </Button>
-                        </DrawerFooter>
-                    </DrawerContent>
-                </Drawer>
-                {submitted() && (
-                    <AnswerCard
-                        word={word}
-                        input={text()}
-                        answer={phoneticWords(word() as any).join(" ")}
-                        correct={isCorrect(
-                            (text() || "").split(" "),
-                            phoneticWords(word() as any)
+                                        Submit
+                                    </Button>
+                                )}
+                            </>
                         )}
-                        reset={reset}
-                    />
+                    </>
                 )}
             </div>
-        </>
+            <Drawer opened={isOpen()} placement="right" onClose={onClose}>
+                <DrawerOverlay />
+                <DrawerContent>
+                    <DrawerCloseButton />
+                    <DrawerBody>
+                        <div class="flex flex-col mx-4 gap-6">
+                            <div>
+                                <h2 class="font-bold my-4 self-center text-2xl">
+                                    Word length
+                                </h2>
+                                <CheckboxGroup
+                                    colorScheme="info"
+                                    defaultValue={JSON.parse(
+                                        localStorage.getItem("wordLists") ||
+                                            "[]"
+                                    )}
+                                    display="flex"
+                                    gap="$4"
+                                    m="auto"
+                                >
+                                    <HStack spacing="$5" mt="$4">
+                                        <Checkbox
+                                            id="short"
+                                            value="short"
+                                            onchange={(e: any) => {
+                                                updateWords(e, "short");
+                                            }}
+                                        >
+                                            Short
+                                        </Checkbox>
+                                        <Checkbox
+                                            id="medium"
+                                            value="medium"
+                                            onchange={(e: any) => {
+                                                updateWords(e, "medium");
+                                            }}
+                                        >
+                                            Medium
+                                        </Checkbox>
+                                        <Checkbox
+                                            id="long"
+                                            value="long"
+                                            onchange={(e: any) => {
+                                                updateWords(e, "long");
+                                            }}
+                                        >
+                                            Long
+                                        </Checkbox>
+                                    </HStack>
+                                </CheckboxGroup>
+                            </div>
+                            <div>
+                                <h2 class="font-bold my-4 self-center text-2xl">
+                                    <span>Smart selection</span>
+                                    <Popover triggerMode="click">
+                                        <PopoverTrigger
+                                            as={IconButton}
+                                            variant="ghost"
+                                            colorScheme="info"
+                                            aria-label="Help"
+                                            ml="$2"
+                                            icon={<HelpIcon />}
+                                        ></PopoverTrigger>
+                                        <PopoverContent>
+                                            <PopoverArrow />
+                                            <PopoverCloseButton />
+                                            <PopoverBody>
+                                                <p class="text-sm">
+                                                    With a higher "smart
+                                                    selection" bias, selected
+                                                    words will have a more even
+                                                    distribution of characters.
+                                                    Without, words will be
+                                                    selected at random, leaning
+                                                    towards words with common
+                                                    characters.
+                                                </p>
+                                            </PopoverBody>
+                                        </PopoverContent>
+                                    </Popover>
+                                </h2>
+                                <Select
+                                    defaultValue={bias()}
+                                    onChange={(e) =>
+                                        setBias(e) &&
+                                        localStorage.setItem("bias", e)
+                                    }
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                        <SelectIcon />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectListbox>
+                                            <SelectOption value={0}>
+                                                <SelectOptionText>
+                                                    None
+                                                </SelectOptionText>
+                                                <SelectOptionIndicator />
+                                            </SelectOption>
+                                            <SelectOption value={1}>
+                                                <SelectOptionText>
+                                                    Low
+                                                </SelectOptionText>
+                                                <SelectOptionIndicator />
+                                            </SelectOption>
+                                            <SelectOption value={2}>
+                                                <SelectOptionText>
+                                                    Medium
+                                                </SelectOptionText>
+                                                <SelectOptionIndicator />
+                                            </SelectOption>
+                                            <SelectOption value={3}>
+                                                <SelectOptionText>
+                                                    High
+                                                </SelectOptionText>
+                                                <SelectOptionIndicator />
+                                            </SelectOption>
+                                        </SelectListbox>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+                    </DrawerBody>
+                    <DrawerFooter>
+                        <Button
+                            leftIcon={
+                                <Icon
+                                    as={(<DangerousIcon />) as any}
+                                    bgColor={"#e53e3e"}
+                                />
+                            }
+                            variant="dashed"
+                            borderColor={"#e53e3e"}
+                            color={"#e53e3e"}
+                            _hover={{
+                                borderColor: "#e53e3e",
+                                background: "#e53e3e",
+                                color: "white",
+                            }}
+                            mr="$3"
+                            onclick={() => {
+                                localStorage.clear();
+                                window.location.reload();
+                            }}
+                        >
+                            Reset
+                        </Button>
+                        <Button
+                            variant="solid"
+                            mr="$3"
+                            colorScheme="success"
+                            onClick={onClose}
+                        >
+                            Save & Close
+                        </Button>
+                    </DrawerFooter>
+                </DrawerContent>
+            </Drawer>
+            {submitted() && (
+                <AnswerCard
+                    word={word}
+                    input={text()}
+                    answer={phoneticWords(word() as any).join(" ")}
+                    correct={isCorrect(
+                        (text() || "").split(" "),
+                        phoneticWords(word() as any)
+                    )}
+                    reset={reset}
+                />
+            )}
+        </Page>
     );
 };
 
 export default NatoAlphabetQuiz;
+export { NatoAlphabetQuizMeta };
