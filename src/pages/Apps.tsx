@@ -51,9 +51,9 @@ const Card = (props: AppProps) => {
 
     return (
         <>
-            <a onClick={onOpen}>
+            <div onClick={onOpen}>
                 <Item {...props} />
-            </a>
+            </div>
             <Modal size="xl" centered opened={isOpen()} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent class="bg-neutral-200 dark:bg-neutral-800" p="$6">

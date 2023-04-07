@@ -47,7 +47,7 @@ import medWordsRaw from "../data/med-words.txt?raw";
 import shortWordsRaw from "../data/short-words.txt?raw";
 import FuzzySet from "fuzzyset";
 
-import coverImg from "../assets/nato-alphabet.png";
+import coverImg from "../assets/nato-alphabet.webp";
 
 import DangerousIcon from "@suid/icons-material/Dangerous";
 import HelpIcon from "@suid/icons-material/Help";
