@@ -1,6 +1,6 @@
 import type { Component } from "solid-js";
 import { createSignal, createEffect } from "solid-js";
-import Page from "../components/Page";
+import Page from "../../components/Page";
 import {
     Button,
     Input,
@@ -42,28 +42,16 @@ import {
     PopoverBody,
     IconButton,
 } from "@hope-ui/solid";
-import longWordsRaw from "../data/long-words.txt?raw";
-import medWordsRaw from "../data/med-words.txt?raw";
-import shortWordsRaw from "../data/short-words.txt?raw";
+import longWordsRaw from "../../data/long-words.txt?raw";
+import medWordsRaw from "../../data/med-words.txt?raw";
+import shortWordsRaw from "../../data/short-words.txt?raw";
 import FuzzySet from "fuzzyset";
-
-import coverImg from "../assets/nato-alphabet.webp";
 
 import DangerousIcon from "@suid/icons-material/Dangerous";
 import HelpIcon from "@suid/icons-material/Help";
 import SettingsIcon from "@suid/icons-material/Settings";
 
-const NatoAlphabetQuizMeta = {
-    title: "NATO Alphabet Quiz",
-    url: "/nato-alphabet",
-    image: coverImg,
-    alt: "Screenshot of the NATO Alphabet Quiz app.",
-    description:
-        "A quiz to help you learn and practice the NATO phonetic alphabet.",
-    date: "April 2023",
-    tools: ["SolidJS", "TypeScript", "TailwindCSS", "HopeUI"],
-    github: "https://github.com/uncenter/apps/tree/main/src/pages/NatoAlphabet.tsx",
-};
+import { meta } from "./meta";
 
 const wordListsArray: Record<string, string[]> = {
     long: longWordsRaw.split("\n"),
@@ -416,7 +404,7 @@ const NatoAlphabetQuiz: Component = () => {
         setIsSuperSmall(window.innerWidth < 500);
     }, 500);
     return (
-        <Page title={NatoAlphabetQuizMeta.title}>
+        <Page title={meta.title}>
             <Button
                 leftIcon={<SettingsIcon />}
                 onClick={onOpen}
@@ -734,4 +722,3 @@ const NatoAlphabetQuiz: Component = () => {
 };
 
 export default NatoAlphabetQuiz;
-export { NatoAlphabetQuizMeta };

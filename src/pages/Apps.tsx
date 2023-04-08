@@ -17,7 +17,7 @@ import PageHeader from "../components/PageHeader";
 import Nav from "../components/Nav";
 import OpenInNew from "@suid/icons-material/OpenInNew";
 
-import { NatoAlphabetQuizMeta } from "./NatoAlphabet";
+import { meta as NatoAlphabetQuizMeta } from "./NatoAlphabet/meta";
 
 interface AppProps {
     title: string;
