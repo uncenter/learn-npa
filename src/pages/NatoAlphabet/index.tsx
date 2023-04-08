@@ -45,88 +45,19 @@ import {
 import longWordsRaw from "../../data/long-words.txt?raw";
 import medWordsRaw from "../../data/med-words.txt?raw";
 import shortWordsRaw from "../../data/short-words.txt?raw";
-import FuzzySet from "fuzzyset";
 
 import DangerousIcon from "@suid/icons-material/Dangerous";
 import HelpIcon from "@suid/icons-material/Help";
 import SettingsIcon from "@suid/icons-material/Settings";
 
 import { meta } from "./meta";
+import { natoAlphabet, phoneticWords, isCorrect, mergeArrays } from "./utils";
 
 const wordListsArray: Record<string, string[]> = {
     long: longWordsRaw.split("\n"),
     medium: medWordsRaw.split("\n"),
     short: shortWordsRaw.split("\n").filter((word) => word.length > 3),
 };
-
-const natoAlphabet: Record<string, string> = {
-    A: "Alpha",
-    B: "Bravo",
-    C: "Charlie",
-    D: "Delta",
-    E: "Echo",
-    F: "Foxtrot",
-    G: "Golf",
-    H: "Hotel",
-    I: "India",
-    J: "Juliett",
-    K: "Kilo",
-    L: "Lima",
-    M: "Mike",
-    N: "November",
-    O: "Oscar",
-    P: "Papa",
-    Q: "Quebec",
-    R: "Romeo",
-    S: "Sierra",
-    T: "Tango",
-    U: "Uniform",
-    V: "Victor",
-    W: "Whiskey",
-    X: "X-ray",
-    Y: "Yankee",
-    Z: "Zulu",
-};
-
-const fuzzy = FuzzySet();
-for (let word of Object.values(natoAlphabet)) {
-    fuzzy.add(word);
-}
-
-function phoneticWords(word: string) {
-    const phoneticWords = [];
-    for (let i = 0; i < word.length; i++) {
-        phoneticWords.push(natoAlphabet[word[i].toUpperCase()]);
-    }
-    return phoneticWords;
-}
-
-function isCorrect(inputWords: string[], correctWords: string[]) {
-    if (
-        inputWords.length !== correctWords.length ||
-        inputWords.every((word) => word.length === 1)
-    ) {
-        return false;
-    }
-    for (let i = 0; i < inputWords.length; i++) {
-        if (inputWords[i].length === 1) {
-            return false;
-        }
-        const fuzzyMatch = fuzzy.get(inputWords[i])[0];
-        if (fuzzyMatch[0] < 0.85 && fuzzyMatch[1] !== correctWords[i]) {
-            return false;
-        }
-    }
-    return true;
-}
-
-function mergeArrays(...arrays: any[]) {
-    let merged: any[] = [];
-    for (let array of arrays) {
-        merged = merged.concat(array);
-    }
-    return merged;
-}
 
 const AnswerCard = (props: any) => {
     let nextButton: any;
