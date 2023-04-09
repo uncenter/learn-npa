@@ -9,5 +9,5 @@ export const meta = {
         "A quiz to help you learn and practice the NATO phonetic alphabet.",
     date: "April 2023",
     tools: ["SolidJS", "TypeScript", "TailwindCSS", "HopeUI"],
-    github: "https://github.com/uncenter/apps/tree/main/src/pages/NatoAlphabet.tsx",
+    github: "https://github.com/uncenter/apps/tree/main/src/pages/NatoAlphabet",
 };
