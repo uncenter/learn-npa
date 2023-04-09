@@ -7,6 +7,7 @@ import {
 } from "@hope-ui/solid";
 
 import NatoAlphabetQuiz from "./pages/NatoAlphabet";
+import NatoTranslator from "./pages/NatoTranslator";
 import Apps from "./pages/Apps";
 
 import { Route, Routes } from "@solidjs/router";
@@ -34,6 +35,10 @@ const App: Component = () => {
                             <Route
                                 path="/nato-alphabet"
                                 component={NatoAlphabetQuiz}
+                            />
+                            <Route
+                                path="/nato-translator"
+                                component={NatoTranslator}
                             />
                         </Routes>
                     </NotificationsProvider>

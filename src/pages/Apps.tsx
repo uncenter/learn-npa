@@ -18,6 +18,7 @@ import Nav from "../components/Nav";
 import OpenInNew from "@suid/icons-material/OpenInNew";
 
 import { meta as NatoAlphabetQuizMeta } from "./NatoAlphabet/meta";
+import { meta as NatoTranslatorMeta } from "./NatoTranslator/meta";
 
 interface AppProps {
     title: string;
@@ -132,6 +133,7 @@ const Home: Component = () => {
                     class="mt-8"
                 >
                     <Card {...NatoAlphabetQuizMeta} />
+                    <Card {...NatoTranslatorMeta} />
                 </SimpleGrid>
             </div>
         </>
