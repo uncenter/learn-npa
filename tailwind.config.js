@@ -3,9 +3,9 @@ module.exports = {
     content: ["./src/**/*.{js,jsx,ts,tsx}"],
     theme: {
         fontFamily: {
-            typewriter: ['"Inconsolata"', "monospace"],
+            typewriter: ['"IBM Plex Mono"', "monospace"],
         },
         extend: {},
     },
-    plugins: [require("@kobalte/tailwindcss")({ prefix: "kb" })],
+    plugins: [],
 };

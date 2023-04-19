@@ -1,14 +1,12 @@
 import type { Component } from "solid-js";
-import { MetaProvider, Title, Link, Meta } from "@solidjs/meta";
+import { MetaProvider, Title } from "@solidjs/meta";
 import {
     HopeThemeConfig,
     HopeProvider,
     NotificationsProvider,
 } from "@hope-ui/solid";
 
-import NatoAlphabetQuiz from "./pages/NatoAlphabet";
-import NatoTranslator from "./pages/NatoTranslator";
-import Apps from "./pages/Apps";
+import Quiz from "./pages/Quiz";
 
 import { Route, Routes } from "@solidjs/router";
 
@@ -27,19 +25,11 @@ const App: Component = () => {
     return (
         <>
             <MetaProvider>
-                <Title>Apps</Title>
+                <Title>Phonetic Alphabet Tools</Title>
                 <HopeProvider config={config}>
                     <NotificationsProvider placement={"bottom-start"}>
                         <Routes>
-                            <Route path="/" component={Apps} />
-                            <Route
-                                path="/nato-alphabet"
-                                component={NatoAlphabetQuiz}
-                            />
-                            <Route
-                                path="/nato-translator"
-                                component={NatoTranslator}
-                            />
+                            <Route path="/" component={Quiz} />
                         </Routes>
                     </NotificationsProvider>
                 </HopeProvider>

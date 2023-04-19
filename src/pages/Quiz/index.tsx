@@ -1,6 +1,4 @@
-import type { Component } from "solid-js";
 import { createSignal, createEffect } from "solid-js";
-import Page from "../../components/Page";
 import {
     Button,
     Input,
@@ -50,13 +48,12 @@ import DangerousIcon from "@suid/icons-material/Dangerous";
 import HelpIcon from "@suid/icons-material/Help";
 import SettingsIcon from "@suid/icons-material/Settings";
 
-import { meta } from "./meta";
 import { natoAlphabet, phoneticWords, isCorrect, mergeArrays } from "./utils";
 
 const wordListsArray: Record<string, string[]> = {
     long: longWordsRaw.split("\n"),
     medium: medWordsRaw.split("\n"),
-    short: shortWordsRaw.split("\n").filter((word) => word.length > 3),
+    short: shortWordsRaw.split("\n").filter((word: string) => word.length > 3),
 };
 
 const AnswerCard = (props: any) => {
@@ -179,7 +176,7 @@ const ReferenceCard = () => {
     );
 };
 
-const NatoAlphabetQuiz: Component = () => {
+export default function Quiz() {
     const data: any = {
         wordLists: ["short"],
         pastCharacters: {},
@@ -335,7 +332,7 @@ const NatoAlphabetQuiz: Component = () => {
         setIsSuperSmall(window.innerWidth < 500);
     }, 500);
     return (
-        <Page title={meta.title}>
+        <>
             <Button
                 leftIcon={<SettingsIcon />}
                 onClick={onOpen}
@@ -648,8 +645,6 @@ const NatoAlphabetQuiz: Component = () => {
                     reset={reset}
                 />
             )}
-        </Page>
+        </>
     );
-};
-
-export default NatoAlphabetQuiz;
+}

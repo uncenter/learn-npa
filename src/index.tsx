@@ -16,7 +16,9 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 render(
     () => (
         <Router>
-            <App />
+            <div class="flex flex-col min-h-screen m-6">
+                <App />
+            </div>
         </Router>
     ),
     root!
