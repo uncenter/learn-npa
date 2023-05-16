@@ -345,7 +345,7 @@ export default function Quiz() {
                 aria-label="Settings"
             />
             <div class="flex flex-col gap-4 mx-6">
-                <div class="self-center text-4xl bg-gray-200 text-zinc-700 rounded-lg p-4 font-typewriter mb-4">
+                <div class="self-center text-4xl bg-gray-200 text-zinc-700 rounded-lg p-4 mb-4">
                     <span>{word()}</span>
                 </div>
                 {!isSmall() && (
