@@ -1,15 +1,2 @@
-# Prompt: Draw an ASCII image of a robot for my robots.txt file.
-# ChatGPT: Sure, here is an ASCII image of a robot for your robots.txt file:
-#
-#       _.--""`-..
-#     ,'          `.
-#   ,'          __  `.
-#  /|          " __   \
-# `'    ||    `-'  `.`."
-#       ||          `|
-#       \_|         _/
-#         `"""""""""`
-# I hope you like it!
-
 User-agent: *
 Disallow:

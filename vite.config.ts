@@ -1,12 +1,10 @@
 import { defineConfig } from "vite";
-import solidPlugin from "vite-plugin-solid";
+import solid from "solid-start/vite";
+import vercel from "solid-start-vercel";
 
 export default defineConfig({
-    plugins: [solidPlugin()],
-    server: {
-        port: 3000,
-    },
-    build: {
-        target: "esnext",
+    plugins: [solid({ adapter: vercel({}) })],
+    ssr: {
+        noExternal: ["@kobalte/core"],
     },
 });
