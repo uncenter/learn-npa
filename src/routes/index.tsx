@@ -5,16 +5,15 @@ import { makePersisted } from '@solid-primitives/storage';
 
 import { Button } from '@/components/ui/button';
 import {
-	AlertDialog,
-	AlertDialogClose,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogTrigger,
-	AlertDialogAction,
-} from '@/components/ui/alert-dialog';
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+	DialogAction,
+} from '@/components/ui/dialog';
 import {
 	Toast,
 	ToastContent,
@@ -104,17 +103,17 @@ const ReferenceCard = () => {
 		rightAlphabet = alphabet.slice(middleIndex);
 
 	return (
-		<AlertDialog>
-			<AlertDialogTrigger asChild>
+		<Dialog>
+			<DialogTrigger asChild>
 				<As component={Button} variant="outline">
 					Lookup
 				</As>
-			</AlertDialogTrigger>
-			<AlertDialogContent>
-				<AlertDialogHeader>
-					<AlertDialogTitle>NATO/FAA Phonetic Alphabet</AlertDialogTitle>
-				</AlertDialogHeader>
-				<AlertDialogDescription>
+			</DialogTrigger>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>NATO/FAA Phonetic Alphabet</DialogTitle>
+				</DialogHeader>
+				<DialogDescription>
 					<div class="inline-block py-2 w-2/5 text-base">
 						<table class="min-w-full text-left font-light ml-[50%]">
 							<tbody>
@@ -140,13 +139,12 @@ const ReferenceCard = () => {
 							</tbody>
 						</table>
 					</div>
-				</AlertDialogDescription>
-				<AlertDialogFooter>
-					<AlertDialogClose>Cancel</AlertDialogClose>
-					<AlertDialogAction>Continue</AlertDialogAction>
-				</AlertDialogFooter>
-			</AlertDialogContent>
-		</AlertDialog>
+				</DialogDescription>
+				<DialogFooter>
+					<DialogAction>Continue</DialogAction>
+				</DialogFooter>
+			</DialogContent>
+		</Dialog>
 	);
 };
 
@@ -219,15 +217,12 @@ export default function Quiz() {
 	createEffect(() => {
 		if (submitted()) {
 			addCharacters(word());
-			const input = document.querySelector('#input') as HTMLInputElement;
-			if (input) input.value = text() || '';
 			setSubmitted(true);
 		}
 	});
 	function reset() {
 		setSubmitted(false);
 		newWord();
-		(document.querySelector('#input') as HTMLInputElement).value = '';
 		setText('');
 	}
 	function updateWords(e: Event, wordList: string) {
@@ -350,17 +345,17 @@ export default function Quiz() {
 					</SheetFooter>
 				</SheetContent>
 			</Sheet>
-			<div class="flex flex-col gap-4 mx-6">
+			<div class="flex flex-col gap-4 mt-4">
 				<div class="self-center text-4xl bg-gray-200 text-zinc-700 rounded-lg p-4 mb-4">
-					<span>{word()}</span>
+					{word()}
 				</div>
-				<div class="flex flex-row gap-1">
+				<div class="flex flex-row gap-1 justify-center">
 					<ReferenceCard />
 					<TextField
-						id="input"
 						disabled={submitted()}
+						value={text()}
+						onChange={setText}
 						class="uppercase"
-						oninput={(e: Event) => setText((e.target as HTMLInputElement).value)}
 						onkeypress={(e: KeyboardEvent) => {
 							if (e.key === 'Enter') {
 								setSubmitted(true);
