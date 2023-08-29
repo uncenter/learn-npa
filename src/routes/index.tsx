@@ -48,11 +48,11 @@ import longWordsRaw from '../data/long-words.txt?raw';
 import medWordsRaw from '../data/med-words.txt?raw';
 import shortWordsRaw from '../data/short-words.txt?raw';
 
-import { natoAlphabet, phoneticWords, isCorrect, mergeArrays } from '../utils';
+import { NATO_ALPHABET, convertToPhoneticWords, isCorrect, mergeArrays } from '../utils';
 
 import { makePersisted } from '@solid-primitives/storage';
 
-const wordListsArray: Record<string, string[]> = {
+const wordListValues: Record<string, string[]> = {
 	long: longWordsRaw.split('\n'),
 	medium: medWordsRaw.split('\n'),
 	short: shortWordsRaw.split('\n').filter((word: string) => word.length > 3),
@@ -92,7 +92,7 @@ const AnswerCard = (props: {
 };
 
 const ReferenceCard = () => {
-	const alphabet = Object.entries(natoAlphabet);
+	const alphabet = Object.entries(NATO_ALPHABET);
 	const middleIndex = Math.ceil(alphabet.length / 2);
 	const leftAlphabet = alphabet.slice(0, middleIndex);
 	const rightAlphabet = alphabet.slice(middleIndex);
@@ -164,7 +164,7 @@ export default function Quiz() {
 		name: 'pastCharacters',
 	});
 
-	let words: string[] = wordLists().flatMap((list) => wordListsArray[list]);
+	let words: string[] = wordLists().flatMap((list) => wordListValues[list]);
 	const [word, setWord] = makePersisted(
 		createSignal(words[Math.floor(Math.random() * words.length)].toUpperCase()),
 		{ name: 'word' },
@@ -247,7 +247,7 @@ export default function Quiz() {
 	}
 	function updateWords(e: any, wordList: string) {
 		if (e.target.checked) {
-			words = words.concat(wordListsArray[wordList]);
+			words = mergeArrays(words, wordListValues[wordList]);
 			if (!wordLists().includes(wordList)) setWordLists([...wordLists(), wordList]);
 		} else {
 			if (wordLists().length === 1) {
@@ -264,7 +264,7 @@ export default function Quiz() {
 				));
 				return;
 			}
-			words = words.filter((word: string) => !wordListsArray[wordList].includes(word));
+			words = words.filter((word: string) => !wordListValues[wordList].includes(word));
 			if (wordLists().includes(wordList))
 				setWordLists(wordLists().splice(wordLists().indexOf(wordList), 1));
 		}
@@ -411,8 +411,8 @@ export default function Quiz() {
 				<AnswerCard
 					word={word()}
 					input={text()}
-					answer={phoneticWords(word() as any).join(' ')}
-					correct={isCorrect((text() || '').split(' '), phoneticWords(word() as any))}
+					answer={convertToPhoneticWords(word()).join(' ')}
+					correct={isCorrect((text() || '').split(' '), convertToPhoneticWords(word()))}
 					reset={reset}
 				/>
 			)}

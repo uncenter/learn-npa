@@ -1,6 +1,6 @@
 import FuzzySet from 'fuzzyset';
 
-export const natoAlphabet: Record<string, string> = {
+export const NATO_ALPHABET: Record<string, string> = {
 	A: 'Alpha',
 	B: 'Bravo',
 	C: 'Charlie',
@@ -29,38 +29,23 @@ export const natoAlphabet: Record<string, string> = {
 	Z: 'Zulu',
 };
 
-export function phoneticWords(word: string) {
-	const phoneticWords = [];
-	for (let i = 0; i < word.length; i++) {
-		phoneticWords.push(natoAlphabet[word[i].toUpperCase()]);
-	}
-	return phoneticWords;
+export function convertToPhoneticWords(word: string) {
+	return [...word.toUpperCase()].map((char) => NATO_ALPHABET[char]);
 }
 
-export function isCorrect(inputWords: string[], correctWords: string[]) {
+export function isCorrect(words: string[], correctWords: string[]) {
 	const fuzzy = FuzzySet();
-	for (const word of Object.values(natoAlphabet)) {
-		fuzzy.add(word);
-	}
-	if (inputWords.length !== correctWords.length || inputWords.every((word) => word.length === 1)) {
-		return false;
-	}
-	for (let i = 0; i < inputWords.length; i++) {
-		if (inputWords[i].length === 1) {
-			return false;
-		}
-		const fuzzyMatch = fuzzy.get(inputWords[i])[0];
-		if (fuzzyMatch[0] < 0.85 && fuzzyMatch[1] !== correctWords[i]) {
-			return false;
-		}
-	}
-	return true;
+	for (const word of Object.values(NATO_ALPHABET)) fuzzy.add(word);
+	return (
+		words.length === correctWords.length &&
+		words.every(
+			(word, i) =>
+				word.length > 1 &&
+				(fuzzy.get(word)[0][0] >= 0.85 || fuzzy.get(word)[0][1] === correctWords[i]),
+		)
+	);
 }
 
-export function mergeArrays(...arrays: any[]) {
-	let merged: any[] = [];
-	for (const array of arrays) {
-		merged = merged.concat(array);
-	}
-	return merged;
+export function mergeArrays<T>(...arrays: T[][]): T[] {
+	return ([] as T[]).concat(...arrays);
 }
