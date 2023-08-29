@@ -39,7 +39,7 @@ export function phoneticWords(word: string) {
 
 export function isCorrect(inputWords: string[], correctWords: string[]) {
 	const fuzzy = FuzzySet();
-	for (let word of Object.values(natoAlphabet)) {
+	for (const word of Object.values(natoAlphabet)) {
 		fuzzy.add(word);
 	}
 	if (inputWords.length !== correctWords.length || inputWords.every((word) => word.length === 1)) {
@@ -59,7 +59,7 @@ export function isCorrect(inputWords: string[], correctWords: string[]) {
 
 export function mergeArrays(...arrays: any[]) {
 	let merged: any[] = [];
-	for (let array of arrays) {
+	for (const array of arrays) {
 		merged = merged.concat(array);
 	}
 	return merged;
