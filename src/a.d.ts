@@ -1,1 +1,1 @@
-declare module "fuzzyset";
+declare module 'fuzzyset';

@@ -1,18 +1,9 @@
-dist
-.solid
-.output
-.vercel
-.netlify
-netlify
+dist/
+.solid/
+.output/
+.vercel/
 
-/node_modules
-
-/.idea
-.project
-.classpath
-*.launch
-.settings/
-.vscode
+node_modules/
 
 .DS_Store
 Thumbs.db
