@@ -1,6 +1,7 @@
 /* eslint-disable solid/reactivity */
 import { createSignal, createEffect, For } from 'solid-js';
 import { Portal } from 'solid-js/web';
+import { makePersisted } from '@solid-primitives/storage';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -41,16 +42,19 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-
 import { As, toaster } from '@kobalte/core';
 
 import longWordsRaw from '../data/long-words.txt?raw';
 import medWordsRaw from '../data/med-words.txt?raw';
 import shortWordsRaw from '../data/short-words.txt?raw';
 
-import { NATO_ALPHABET, convertToPhoneticWords, isCorrect, mergeArrays } from '../utils';
-
-import { makePersisted } from '@solid-primitives/storage';
+import {
+	NATO_ALPHABET,
+	convertToPhoneticWords,
+	isCorrect,
+	mergeArrays,
+	countCharOccurrences,
+} from '../utils';
 
 const wordListValues: Record<string, string[]> = {
 	long: longWordsRaw.split('\n'),
@@ -66,7 +70,7 @@ const AnswerCard = (props: {
 	reset: () => void;
 }) => {
 	return (
-		<div>
+		<div class="flex flex-col gap-4">
 			<div class="rounded-lg shadow-lg mt-8 text-center mx-6 uppercase">
 				<h2
 					class={`flex font-bold ${
@@ -86,73 +90,64 @@ const AnswerCard = (props: {
 					</div>
 				</div>
 			</div>
-			<Button onClick={() => props.reset()}>Next</Button>
+			<Button onClick={() => props.reset()} class="mx-auto">
+				Next
+			</Button>
 		</div>
 	);
 };
 
 const ReferenceCard = () => {
-	const alphabet = Object.entries(NATO_ALPHABET);
-	const middleIndex = Math.ceil(alphabet.length / 2);
-	const leftAlphabet = alphabet.slice(0, middleIndex);
-	const rightAlphabet = alphabet.slice(middleIndex);
+	const alphabet = Object.entries(NATO_ALPHABET),
+		middleIndex = Math.ceil(alphabet.length / 2),
+		leftAlphabet = alphabet.slice(0, middleIndex),
+		rightAlphabet = alphabet.slice(middleIndex);
 
 	return (
-		<>
-			<AlertDialog>
-				<AlertDialogTrigger asChild>
-					<As component={Button} variant="outline">
-						Lookup
-					</As>
-				</AlertDialogTrigger>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>NATO/FAA Phonetic Alphabet</AlertDialogTitle>
-					</AlertDialogHeader>
-					<AlertDialogDescription>
-						<div class="inline-block py-2 w-2/5 text-base">
-							<table class="min-w-full text-left font-light ml-[50%]">
-								<tbody>
-									<For each={leftAlphabet}>
-										{(entry) => {
-											const letter = entry[0];
-											const phonetic = entry[1];
+		<AlertDialog>
+			<AlertDialogTrigger asChild>
+				<As component={Button} variant="outline">
+					Lookup
+				</As>
+			</AlertDialogTrigger>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>NATO/FAA Phonetic Alphabet</AlertDialogTitle>
+				</AlertDialogHeader>
+				<AlertDialogDescription>
+					<div class="inline-block py-2 w-2/5 text-base">
+						<table class="min-w-full text-left font-light ml-[50%]">
+							<tbody>
+								<For each={leftAlphabet}>
+									{(entry) => {
+										const letter = entry[0];
+										const phonetic = entry[1];
 
-											return (
-												<tr class="border-none">
-													<th class="text-right px-4 py-2">{letter}</th>
-													<td class="text-left px-4 py-2">{phonetic}</td>
-													<th class="text-right px-4 py-2">
-														{rightAlphabet[leftAlphabet.indexOf(entry)][0]}
-													</th>
-													<td class="text-left px-4 py-2">
-														{rightAlphabet[leftAlphabet.indexOf(entry)][1]}
-													</td>
-												</tr>
-											);
-										}}
-									</For>
-								</tbody>
-							</table>
-						</div>
-					</AlertDialogDescription>
-					<AlertDialogFooter>
-						<AlertDialogClose>Cancel</AlertDialogClose>
-						<AlertDialogAction>Continue</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
-		</>
+										return (
+											<tr class="border-none">
+												<th class="text-right px-4 py-2">{letter}</th>
+												<td class="text-left px-4 py-2">{phonetic}</td>
+												<th class="text-right px-4 py-2">
+													{rightAlphabet[leftAlphabet.indexOf(entry)][0]}
+												</th>
+												<td class="text-left px-4 py-2">
+													{rightAlphabet[leftAlphabet.indexOf(entry)][1]}
+												</td>
+											</tr>
+										);
+									}}
+								</For>
+							</tbody>
+						</table>
+					</div>
+				</AlertDialogDescription>
+				<AlertDialogFooter>
+					<AlertDialogClose>Cancel</AlertDialogClose>
+					<AlertDialogAction>Continue</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
 	);
-};
-
-type QuizState = {
-	bias: number;
-	pastCharacters: Record<string, number>;
-	submitted: boolean;
-	text: string;
-	word: string;
-	wordLists: ('short' | 'medium' | 'long')[];
 };
 
 export default function Quiz() {
@@ -175,32 +170,22 @@ export default function Quiz() {
 	}
 
 	function newWord() {
-		function countCommonChars(word: string, characters: any) {
-			let count = 0;
-			for (const character of word) {
-				count += characters[character.toUpperCase()] || 0;
-			}
-			return count;
-		}
-		if (words.length === 0) {
-			console.log('No words left! How did you do that?');
-			return;
-		}
+		if (words.length === 0) return;
 		if (bias() > 0) {
-			const wordCounts = words.map((word: string) => ({
-				word,
-				count: countCommonChars(word, pastCharacters()),
-			}));
-
-			const sortedWords = wordCounts.sort((a: any, b: any) => a.count - b.count);
+			const sortedWords = words
+				.map((word: string) => ({
+					word,
+					count: countCharOccurrences(word, pastCharacters()),
+				}))
+				.sort((a, b) => a.count - b.count);
 
 			const minCount = sortedWords[0].count;
-			const minCountWords = sortedWords.filter((w: any) => w.count === minCount);
+			const minCountWords = sortedWords.filter((word) => word.count === minCount);
 			let randomIndex = Math.floor(Math.random() * minCountWords.length);
-			const biasScore: any = {
-				1: 3, // Once every 3 words
-				2: 2, // Once every 2 words
-				3: 1, // Every word
+			const biasScore: Record<number, number> = {
+				1: 3,
+				2: 2,
+				3: 1,
 			};
 			const randomOrBias = Math.floor(Math.random() * biasScore[bias()]);
 			if (randomOrBias !== 0) {
@@ -242,11 +227,11 @@ export default function Quiz() {
 	function reset() {
 		setSubmitted(false);
 		newWord();
-		(document.getElementById('input') as HTMLInputElement).value = '';
+		(document.querySelector('#input') as HTMLInputElement).value = '';
 		setText('');
 	}
-	function updateWords(e: any, wordList: string) {
-		if (e.target.checked) {
+	function updateWords(e: Event, wordList: string) {
+		if ((e.target as HTMLInputElement).checked) {
 			words = mergeArrays(words, wordListValues[wordList]);
 			if (!wordLists().includes(wordList)) setWordLists([...wordLists(), wordList]);
 		} else {
@@ -294,7 +279,7 @@ export default function Quiz() {
 										id="short"
 										value="short"
 										defaultChecked={wordLists().includes('short')}
-										onchange={(e: any) => {
+										onchange={(e: Event) => {
 											updateWords(e, 'short');
 										}}
 									>
@@ -304,7 +289,7 @@ export default function Quiz() {
 										id="medium"
 										value="medium"
 										defaultChecked={wordLists().includes('medium')}
-										onchange={(e: any) => {
+										onchange={(e: Event) => {
 											updateWords(e, 'medium');
 										}}
 									>
@@ -314,7 +299,7 @@ export default function Quiz() {
 										id="long"
 										value="long"
 										defaultChecked={wordLists().includes('long')}
-										onchange={(e: any) => {
+										onchange={(e: Event) => {
 											updateWords(e, 'long');
 										}}
 									>
@@ -336,7 +321,7 @@ export default function Quiz() {
 											{{ 0: 'None', 1: 'Low', 2: 'Medium', 3: 'High' }[props.item.rawValue]}
 										</SelectItem>
 									)}
-									onChange={(e: any) => setBias(e) && localStorage.setItem('bias', e)}
+									onChange={setBias}
 									defaultValue={bias()}
 								>
 									<SelectTrigger>
@@ -369,22 +354,20 @@ export default function Quiz() {
 				<div class="self-center text-4xl bg-gray-200 text-zinc-700 rounded-lg p-4 mb-4">
 					<span>{word()}</span>
 				</div>
-				<div class="flex flex-row">
+				<div class="flex flex-row gap-1">
 					<ReferenceCard />
 					<TextField
 						id="input"
 						disabled={submitted()}
 						class="uppercase"
-						oninput={(e: any) =>
-							setText(e.target.value) && localStorage.setItem('text', e.target.value)
-						}
-						onkeypress={(e: any) => {
+						oninput={(e: Event) => setText((e.target as HTMLInputElement).value)}
+						onkeypress={(e: KeyboardEvent) => {
 							if (e.key === 'Enter') {
 								setSubmitted(true);
 							}
 						}}
 					>
-						<TextFieldInput type="email" placeholder="Email" />
+						<TextFieldInput type="text" />
 					</TextField>
 					<Button
 						id="submit"
@@ -397,7 +380,6 @@ export default function Quiz() {
 					</Button>
 					<Button
 						id="reset"
-						class="ml-4"
 						disabled={submitted()}
 						onclick={() => {
 							reset();

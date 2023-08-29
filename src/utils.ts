@@ -49,3 +49,7 @@ export function isCorrect(words: string[], correctWords: string[]) {
 export function mergeArrays<T>(...arrays: T[][]): T[] {
 	return ([] as T[]).concat(...arrays);
 }
+
+export function countCharOccurrences(word: string, charMap: Record<string, number>) {
+	return [...word].reduce((count, char) => count + (charMap[char.toUpperCase()] || 0), 0);
+}
