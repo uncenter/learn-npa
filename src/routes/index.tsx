@@ -43,23 +43,9 @@ import {
 } from '@/components/ui/select';
 import { As, toaster } from '@kobalte/core';
 
-import longWordsRaw from '../data/long-words.txt?raw';
-import medWordsRaw from '../data/med-words.txt?raw';
-import shortWordsRaw from '../data/short-words.txt?raw';
-
-import {
-	NATO_ALPHABET,
-	convertToPhoneticWords,
-	isCorrect,
-	mergeArrays,
-	countCharOccurrences,
-} from '../utils';
-
-const wordListValues: Record<string, string[]> = {
-	long: longWordsRaw.split('\n'),
-	medium: medWordsRaw.split('\n'),
-	short: shortWordsRaw.split('\n').filter((word: string) => word.length > 3),
-};
+import { NATO_ALPHABET, WORD_DICTS } from '@/constants';
+import { convertToPhoneticWords, isCorrect, countCharOccurrences } from '@/quiz';
+import { mergeArrays } from '@/lib/utils';
 
 const AnswerCard = (props: {
 	correct: boolean;
@@ -157,7 +143,7 @@ export default function Quiz() {
 		name: 'pastCharacters',
 	});
 
-	let words: string[] = wordLists().flatMap((list) => wordListValues[list]);
+	let words: string[] = wordLists().flatMap((list) => WORD_DICTS[list]);
 	const [word, setWord] = makePersisted(
 		createSignal(words[Math.floor(Math.random() * words.length)].toUpperCase()),
 		{ name: 'word' },
@@ -227,7 +213,7 @@ export default function Quiz() {
 	}
 	function updateWords(e: Event, wordList: string) {
 		if ((e.target as HTMLInputElement).checked) {
-			words = mergeArrays(words, wordListValues[wordList]);
+			words = mergeArrays(words, WORD_DICTS[wordList]);
 			if (!wordLists().includes(wordList)) setWordLists([...wordLists(), wordList]);
 		} else {
 			if (wordLists().length === 1) {
@@ -244,7 +230,7 @@ export default function Quiz() {
 				));
 				return;
 			}
-			words = words.filter((word: string) => !wordListValues[wordList].includes(word));
+			words = words.filter((word: string) => !WORD_DICTS[wordList].includes(word));
 			if (wordLists().includes(wordList))
 				setWordLists(wordLists().splice(wordLists().indexOf(wordList), 1));
 		}
