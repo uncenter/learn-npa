@@ -137,20 +137,17 @@ const ReferenceCard = () => {
 export default function Quiz() {
 	const [wordLists, setWordLists] = makePersisted(createSignal(['short']), { name: 'wordLists' });
 	const [bias, setBias] = makePersisted(createSignal(2), { name: 'bias' });
-	const [submitted, setSubmitted] = makePersisted(createSignal(false), { name: 'submitted' });
-	const [text, setText] = makePersisted(createSignal(''), { name: 'text' });
 	const [pastCharacters, setPastCharacters] = makePersisted(createSignal({}), {
 		name: 'pastCharacters',
 	});
 
+	const [submitted, setSubmitted] = createSignal(false);
+	const [text, setText] = createSignal('');
 	const words = () =>
 		wordLists()
 			.map((list) => WORD_DICTS[list])
 			.flat();
-
-	const [word, setWord] = makePersisted(createSignal(getRandomItem(words()).toUpperCase()), {
-		name: 'word',
-	});
+	const [word, setWord] = createSignal(getRandomItem(words()).toUpperCase());
 
 	function generateNewWord() {
 		if (bias() !== 0) {
@@ -237,15 +234,15 @@ export default function Quiz() {
 				<SheetContent side="right" class="flex flex-col">
 					<SheetHeader>
 						<SheetTitle>Settings</SheetTitle>
-						<SheetDescription class="text-black">
+						<SheetDescription>
 							Make changes to your profile here. Click save when you're done.
 						</SheetDescription>
 					</SheetHeader>
 					<div>
 						<div class="flex flex-col gap-6">
 							<div>
-								<h2 class="font-bold my-4 self-center text-2xl">Word length</h2>
-								<div class="flex flex-row justify-around gap-2">
+								<h4 class="self-center font-medium text-base">Word length</h4>
+								<div class="flex flex-row justify-around gap-2 mt-4">
 									<Checkbox
 										class="flex flex-row gap-2 cursor-pointer"
 										value="short"
@@ -288,13 +285,14 @@ export default function Quiz() {
 								</div>
 							</div>
 							<div>
-								<h2 class="font-bold my-4 self-center text-2xl">Smart selection</h2>
-								<p class="text-sm">
+								<h2 class="font-medium self-center text-base">Smart selection</h2>
+								<p class="text-sm mt-2">
 									With a higher "smart selection" bias, selected words will have a more even
 									distribution of characters. Without, words will be selected at random, leaning
 									towards words with common characters.
 								</p>
 								<Select
+									class="mt-4"
 									options={[0, 1, 2, 3]}
 									itemComponent={(props) => (
 										<SelectItem item={props.item}>

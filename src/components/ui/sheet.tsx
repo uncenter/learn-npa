@@ -79,10 +79,7 @@ export const SheetDescription: ParentComponent<DialogPrimitive.DialogDescription
 ) => {
 	const [local, rest] = splitProps(props, ['class']);
 	return (
-		<DialogPrimitive.Description
-			class={cn('text-sm text-muted-foreground', local.class)}
-			{...rest}
-		/>
+		<DialogPrimitive.Description class={cn('text-sm text-foreground', local.class)} {...rest} />
 	);
 };
 
