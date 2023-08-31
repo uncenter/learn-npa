@@ -1,5 +1,5 @@
 /* eslint-disable solid/reactivity */
-import { createSignal, createEffect, For } from 'solid-js';
+import { createSignal, For } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { makePersisted } from '@solid-primitives/storage';
 
@@ -33,7 +33,7 @@ import {
 	SheetTrigger,
 } from '@/components/ui/sheet';
 import { TextField, TextFieldInput } from '@/components/ui/textfield';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Checkbox, CheckboxControl, CheckboxLabel } from '@/components/ui/checkbox';
 import {
 	Select,
 	SelectContent,
@@ -45,14 +45,14 @@ import { As, toaster } from '@kobalte/core';
 
 import { NATO_ALPHABET, WORD_DICTS } from '@/constants';
 import { convertToPhoneticWords, isCorrect, countCharOccurrences } from '@/quiz';
-import { mergeArrays } from '@/lib/utils';
+import { getRandomItem } from '@/lib/utils';
 
 const AnswerCard = (props: {
 	correct: boolean;
 	word: string;
 	input?: string;
 	answer: string;
-	reset: () => void;
+	next: () => void;
 }) => {
 	return (
 		<div class="flex flex-col gap-4">
@@ -75,7 +75,7 @@ const AnswerCard = (props: {
 					</div>
 				</div>
 			</div>
-			<Button onClick={() => props.reset()} class="mx-auto">
+			<Button onClick={() => props.next()} class="mx-auto">
 				Next
 			</Button>
 		</div>
@@ -99,7 +99,7 @@ const ReferenceCard = () => {
 				<DialogHeader>
 					<DialogTitle>NATO/FAA Phonetic Alphabet</DialogTitle>
 				</DialogHeader>
-				<DialogDescription>
+				<DialogDescription class="text-black">
 					<div class="inline-block py-2 w-2/5 text-base">
 						<table class="min-w-full text-left font-light ml-[50%]">
 							<tbody>
@@ -143,46 +143,42 @@ export default function Quiz() {
 		name: 'pastCharacters',
 	});
 
-	let words: string[] = wordLists().flatMap((list) => WORD_DICTS[list]);
-	const [word, setWord] = makePersisted(
-		createSignal(words[Math.floor(Math.random() * words.length)].toUpperCase()),
-		{ name: 'word' },
-	);
+	const words = () =>
+		wordLists()
+			.map((list) => WORD_DICTS[list])
+			.flat();
 
-	if (!submitted() && text().length > 0) {
-		setText('');
-	}
+	const [word, setWord] = makePersisted(createSignal(getRandomItem(words()).toUpperCase()), {
+		name: 'word',
+	});
 
-	function newWord() {
-		if (words.length === 0) return;
-		if (bias() > 0) {
-			const sortedWords = words
+	function generateNewWord() {
+		if (bias() !== 0) {
+			const sortedWords = words()
 				.map((word: string) => ({
 					word,
 					count: countCharOccurrences(word, pastCharacters()),
 				}))
 				.sort((a, b) => a.count - b.count);
+			const wordsWithLowestChars = sortedWords.filter(
+				(word) => word.count === sortedWords[0].count,
+			);
 
-			const minCount = sortedWords[0].count;
-			const minCountWords = sortedWords.filter((word) => word.count === minCount);
-			let randomIndex = Math.floor(Math.random() * minCountWords.length);
 			const biasScore: Record<number, number> = {
-				1: 3,
-				2: 2,
-				3: 1,
+				1: 3, // 33% biased.
+				2: 2, // 50% biased.
+				3: 1, // Always biased.
 			};
-			const randomOrBias = Math.floor(Math.random() * biasScore[bias()]);
-			if (randomOrBias !== 0) {
-				randomIndex = Math.floor(Math.random() * words.length);
-				setWord(words[randomIndex].toUpperCase());
+			if (Math.floor(Math.random() * biasScore[bias()]) !== 0) {
+				return getRandomItem(words()).toUpperCase();
 			} else {
-				setWord(minCountWords[randomIndex].word.toUpperCase());
+				return getRandomItem(wordsWithLowestChars).word.toUpperCase();
 			}
 		} else {
-			const randomIndex = Math.floor(Math.random() * words.length);
-			setWord(words[randomIndex].toUpperCase());
+			return getRandomItem(words()).toUpperCase();
 		}
 	}
+
 	function addCharacters(word: string) {
 		const characters = word.split('');
 		for (const character of characters) {
@@ -200,21 +196,16 @@ export default function Quiz() {
 			}
 		}
 	}
-	createEffect(() => {
-		if (submitted()) {
-			addCharacters(word());
-			setSubmitted(true);
-		}
-	});
-	function reset() {
+
+	function next() {
 		setSubmitted(false);
-		newWord();
+		setWord(generateNewWord());
 		setText('');
 	}
-	function updateWords(e: Event, wordList: string) {
-		if ((e.target as HTMLInputElement).checked) {
-			words = mergeArrays(words, WORD_DICTS[wordList]);
-			if (!wordLists().includes(wordList)) setWordLists([...wordLists(), wordList]);
+
+	function updateWords(checked: boolean, wordList: string) {
+		if (checked) {
+			setWordLists(Array.from(new Set([...wordLists(), wordList])));
 		} else {
 			if (wordLists().length === 1) {
 				toaster.show((props) => (
@@ -230,12 +221,11 @@ export default function Quiz() {
 				));
 				return;
 			}
-			words = words.filter((word: string) => !WORD_DICTS[wordList].includes(word));
-			if (wordLists().includes(wordList))
-				setWordLists(wordLists().splice(wordLists().indexOf(wordList), 1));
+			setWordLists(wordLists().filter((item) => item !== wordList));
 		}
-		reset();
+		next();
 	}
+
 	return (
 		<>
 			<Sheet>
@@ -244,47 +234,56 @@ export default function Quiz() {
 						Settings
 					</As>
 				</SheetTrigger>
-				<SheetContent side="right">
+				<SheetContent side="right" class="flex flex-col">
 					<SheetHeader>
 						<SheetTitle>Settings</SheetTitle>
-						<SheetDescription>
+						<SheetDescription class="text-black">
 							Make changes to your profile here. Click save when you're done.
 						</SheetDescription>
 					</SheetHeader>
 					<div>
-						<div class="flex flex-col mx-4 gap-6">
+						<div class="flex flex-col gap-6">
 							<div>
 								<h2 class="font-bold my-4 self-center text-2xl">Word length</h2>
-								<div class="flex flex-row">
+								<div class="flex flex-row justify-around gap-2">
 									<Checkbox
-										id="short"
+										class="flex flex-row gap-2 cursor-pointer"
 										value="short"
 										defaultChecked={wordLists().includes('short')}
-										onchange={(e: Event) => {
-											updateWords(e, 'short');
+										onChange={(checked: boolean) => {
+											updateWords(checked, 'short');
 										}}
 									>
-										Short
+										<CheckboxControl />
+										<CheckboxLabel class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+											Short
+										</CheckboxLabel>
 									</Checkbox>
 									<Checkbox
-										id="medium"
+										class="flex flex-row gap-2 cursor-pointer"
 										value="medium"
 										defaultChecked={wordLists().includes('medium')}
-										onchange={(e: Event) => {
-											updateWords(e, 'medium');
+										onChange={(checked: boolean) => {
+											updateWords(checked, 'medium');
 										}}
 									>
-										Medium
+										<CheckboxControl />
+										<CheckboxLabel class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+											Medium
+										</CheckboxLabel>
 									</Checkbox>
 									<Checkbox
-										id="long"
+										class="flex flex-row gap-2 cursor-pointer"
 										value="long"
 										defaultChecked={wordLists().includes('long')}
-										onchange={(e: Event) => {
-											updateWords(e, 'long');
+										onChange={(checked: boolean) => {
+											updateWords(checked, 'long');
 										}}
 									>
-										Long
+										<CheckboxControl />
+										<CheckboxLabel class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+											Long
+										</CheckboxLabel>
 									</Checkbox>
 								</div>
 							</div>
@@ -351,21 +350,15 @@ export default function Quiz() {
 						<TextFieldInput type="text" />
 					</TextField>
 					<Button
-						id="submit"
 						disabled={submitted() || text()?.length === 0}
 						onclick={() => {
 							setSubmitted(true);
+							addCharacters(word());
 						}}
 					>
 						Check
 					</Button>
-					<Button
-						id="reset"
-						disabled={submitted()}
-						onclick={() => {
-							reset();
-						}}
-					>
+					<Button disabled={submitted()} onclick={() => next()}>
 						Skip
 					</Button>
 				</div>
@@ -376,7 +369,7 @@ export default function Quiz() {
 					input={text()}
 					answer={convertToPhoneticWords(word()).join(' ')}
 					correct={isCorrect((text() || '').split(' '), convertToPhoneticWords(word()))}
-					reset={reset}
+					next={next}
 				/>
 			)}
 			<Portal>
