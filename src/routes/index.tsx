@@ -41,11 +41,12 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { As, toaster } from '@kobalte/core';
 
 import { NATO_ALPHABET, WORD_DICTS } from '@/constants';
 import { convertToPhoneticWords, isCorrect, countCharOccurrences } from '@/quiz';
-import { getRandomItem } from '@/lib/utils';
+import { cn, getRandomItem } from '@/lib/utils';
 
 const AnswerCard = (props: {
 	correct: boolean;
@@ -55,30 +56,30 @@ const AnswerCard = (props: {
 	next: () => void;
 }) => {
 	return (
-		<div class="flex flex-col gap-4">
-			<div class="rounded-lg shadow-lg mt-8 text-center mx-6 uppercase">
-				<h2
-					class={`flex font-bold ${
-						props.correct ? 'bg-green-500' : 'bg-[#b71c1c]'
-					} text-white justify-center py-2 rounded-t-lg`}
+		<>
+			<Card class="m-8 text-center">
+				<CardHeader
+					class={cn(props.correct ? 'bg-green-500' : 'bg-[#b71c1c]', 'rounded-t-xl py-4')}
 				>
-					{props.word}
-				</h2>
-				<div class={`p-6 flex text-lg`}>
-					<div class=" block basis-0 grow shrink p-3">
-						<h3 class="mb-2">Your answer</h3>
-						<p class="font-bold text-2xl">{props.input || 'N/A'}</p>
+					<CardTitle class={`flex font-bold text-white justify-center`}>{props.word}</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<div class={`p-6 flex text-lg uppercase`}>
+						<div class=" block basis-0 grow shrink p-3">
+							<h3 class="mb-2">Your answer</h3>
+							<p class="font-bold text-2xl">{props.input || 'N/A'}</p>
+						</div>
+						<div class="block basis-0 grow shrink p-3">
+							<h3 class="text-md mb-2">Correct answer</h3>
+							<p class="font-bold text-2xl">{props.answer}</p>
+						</div>
 					</div>
-					<div class="block basis-0 grow shrink p-3">
-						<h3 class="text-md mb-2">Correct answer</h3>
-						<p class="font-bold text-2xl">{props.answer}</p>
-					</div>
-				</div>
-			</div>
-			<Button onClick={() => props.next()} class="mx-auto">
+				</CardContent>
+			</Card>
+			<Button onClick={() => props.next()} class="flex mx-auto mt-2">
 				Next
 			</Button>
-		</div>
+		</>
 	);
 };
 
