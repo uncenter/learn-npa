@@ -11,35 +11,35 @@
 	"dependencies": {
 		"@kobalte/core": "^0.11.0",
 		"@solid-primitives/storage": "^2.1.1",
-		"@solidjs/meta": "^0.28.2",
-		"@solidjs/router": "^0.8.2",
+		"@solidjs/meta": "^0.28.6",
+		"@solidjs/router": "^0.8.3",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.0.0",
 		"fuzzyset": "^1.0.7",
 		"solid-icons": "^1.0.11",
-		"solid-js": "^1.7.9",
-		"solid-start": "^0.2.30",
+		"solid-js": "^1.7.11",
+		"solid-start": "^0.3.5",
 		"tailwind-merge": "^1.14.0",
 		"tailwindcss-animate": "^1.0.7",
-		"undici": "5.20.0"
+		"undici": "5.23.0"
 	},
 	"devDependencies": {
-		"@types/node": "^18.14.0",
-		"@typescript-eslint/eslint-plugin": "^5.52.0",
-		"@typescript-eslint/parser": "^5.52.0",
-		"autoprefixer": "^10.4.13",
-		"eslint": "^8.34.0",
-		"eslint-plugin-solid": "^0.9.4",
-		"postcss": "^8.4.21",
+		"@types/node": "^20.5.9",
+		"@typescript-eslint/eslint-plugin": "^6.5.0",
+		"@typescript-eslint/parser": "^6.5.0",
+		"autoprefixer": "^10.4.15",
+		"eslint": "^8.48.0",
+		"eslint-plugin-solid": "^0.13.0",
+		"postcss": "^8.4.29",
 		"prettier": "^3.0.3",
-		"solid-start-node": "^0.2.30",
-		"solid-start-vercel": "^0.2.30",
-		"tailwindcss": "^3.2.7",
-		"typescript": "^4.9.5",
-		"vite": "^4.1.2"
+		"solid-start-node": "^0.3.5",
+		"solid-start-vercel": "^0.3.5",
+		"tailwindcss": "^3.3.3",
+		"typescript": "^5.2.2",
+		"vite": "^4.4.9"
 	},
 	"engines": {
 		"node": ">=16"
 	},
-	"packageManager": "pnpm@8.7.0"
+	"packageManager": "pnpm@8.7.1"
 }
