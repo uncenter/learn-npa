@@ -311,10 +311,10 @@ export default function Quiz() {
 							</div>
 						</div>
 					</div>
-					<SheetFooter>
+					<SheetFooter class="mt-auto gap-2">
 						<Button
 							variant="destructive"
-							class="mr-3"
+							class="m-0"
 							onclick={() => {
 								localStorage.clear();
 								window.location.reload();
@@ -323,7 +323,7 @@ export default function Quiz() {
 						>
 							Reset
 						</Button>
-						<Button type="submit" class="mr-3">
+						<Button type="submit" class="m-0">
 							Save & Close
 						</Button>
 					</SheetFooter>

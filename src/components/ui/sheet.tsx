@@ -93,9 +93,6 @@ export const SheetHeader: ParentComponent<ComponentProps<'div'>> = (props) => {
 export const SheetFooter: ParentComponent<ComponentProps<'div'>> = (props) => {
 	const [local, rest] = splitProps(props, ['class']);
 	return (
-		<div
-			class={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', local.class)}
-			{...rest}
-		/>
+		<div class={cn('flex flex-col-reverse sm:flex-row sm:justify-end', local.class)} {...rest} />
 	);
 };
