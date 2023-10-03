@@ -5,6 +5,7 @@ import { cva } from 'class-variance-authority';
 import { TbX } from 'solid-icons/tb';
 import type { ComponentProps } from 'solid-js';
 import { mergeProps, splitProps, type ParentComponent } from 'solid-js';
+import { buttonVariants } from './button';
 
 export const Sheet = DialogPrimitive.Root;
 export const SheetTrigger = DialogPrimitive.Trigger;
@@ -95,4 +96,9 @@ export const SheetFooter: ParentComponent<ComponentProps<'div'>> = (props) => {
 	return (
 		<div class={cn('flex flex-col-reverse sm:flex-row sm:justify-end', local.class)} {...rest} />
 	);
+};
+
+export const SheetAction: ParentComponent<DialogPrimitive.DialogCloseButtonProps> = (props) => {
+	const [local, rest] = splitProps(props, ['class', 'classList']);
+	return <DialogPrimitive.CloseButton class={cn(buttonVariants(), local.class)} {...rest} />;
 };

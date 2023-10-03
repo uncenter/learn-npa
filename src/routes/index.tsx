@@ -31,6 +31,7 @@ import {
 	SheetTitle,
 	SheetFooter,
 	SheetTrigger,
+	SheetAction,
 } from '@/components/ui/sheet';
 import { TextField, TextFieldInput } from '@/components/ui/textfield';
 import { Checkbox, CheckboxControl, CheckboxLabel } from '@/components/ui/checkbox';
@@ -323,9 +324,9 @@ export default function Quiz() {
 						>
 							Reset
 						</Button>
-						<Button type="submit" class="m-0">
+						<SheetAction class="m-0">
 							Save & Close
-						</Button>
+						</SheetAction>
 					</SheetFooter>
 				</SheetContent>
 			</Sheet>
