@@ -27,6 +27,13 @@ export const NATO_ALPHABET: Record<string, string> = {
 	Z: 'Zulu',
 };
 
+export const BIAS_WORDS = {
+	None: 0,
+	Low: 1,
+	Medium: 2,
+	High: 3,
+};
+
 import longWordsRaw from '@/data/long-words.txt?raw';
 import medWordsRaw from '@/data/med-words.txt?raw';
 import shortWordsRaw from '@/data/short-words.txt?raw';

@@ -1,19 +1,42 @@
 /* eslint-disable solid/reactivity */
+import { makePersisted } from '@solid-primitives/storage';
 import { createSignal, For } from 'solid-js';
 import { Portal } from 'solid-js/web';
-import { makePersisted } from '@solid-primitives/storage';
 
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+	Checkbox,
+	CheckboxControl,
+	CheckboxLabel,
+} from '@/components/ui/checkbox';
 import {
 	Dialog,
+	DialogAction,
 	DialogContent,
 	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-	DialogAction,
 } from '@/components/ui/dialog';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select';
+import {
+	Sheet,
+	SheetAction,
+	SheetContent,
+	SheetFooter,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from '@/components/ui/sheet';
+import { TextField, TextFieldInput } from '@/components/ui/textfield';
 import {
 	Toast,
 	ToastContent,
@@ -23,38 +46,15 @@ import {
 	ToastRegion,
 	ToastTitle,
 } from '@/components/ui/toast';
-import {
-	Sheet,
-	SheetContent,
-	SheetHeader,
-	SheetTitle,
-	SheetFooter,
-	SheetTrigger,
-	SheetAction,
-} from '@/components/ui/sheet';
-import { TextField, TextFieldInput } from '@/components/ui/textfield';
-import {
-	Checkbox,
-	CheckboxControl,
-	CheckboxLabel,
-} from '@/components/ui/checkbox';
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { As, toaster } from '@kobalte/core';
 
-import { NATO_ALPHABET, WORD_DICTS } from '@/constants';
+import { BIAS_WORDS, NATO_ALPHABET, WORD_DICTS } from '@/constants';
+import { cn, getRandomItem } from '@/lib/utils';
 import {
 	convertToPhoneticWords,
-	isCorrect,
 	countCharOccurrences,
+	isCorrect,
 } from '@/quiz';
-import { cn, getRandomItem } from '@/lib/utils';
 
 const AnswerCard = (props: {
 	correct: boolean;
@@ -343,21 +343,25 @@ export default function Quiz() {
 								</p>
 								<Select
 									class="mt-4"
-									options={[0, 1, 2, 3]}
+									options={['None', 'Low', 'Medium', 'High']}
 									itemComponent={(props) => (
 										<SelectItem item={props.item}>
-											{
-												{
-													0: 'None',
-													1: 'Low',
-													2: 'Medium',
-													3: 'High',
-												}[props.item.rawValue]
-											}
+											{props.item.rawValue}
 										</SelectItem>
 									)}
-									onChange={setBias}
-									defaultValue={bias()}
+									onChange={(value: string) => {
+										setBias(
+											BIAS_WORDS[
+												value as keyof typeof BIAS_WORDS
+											] || bias(),
+										);
+									}}
+									defaultValue={Object.keys(BIAS_WORDS).find(
+										(key) =>
+											BIAS_WORDS[
+												key as keyof typeof BIAS_WORDS
+											] === bias(),
+									)}
 								>
 									<SelectTrigger>
 										<SelectValue<string>>
