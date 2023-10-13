@@ -26,7 +26,6 @@ import {
 import {
 	Sheet,
 	SheetContent,
-	SheetDescription,
 	SheetHeader,
 	SheetTitle,
 	SheetFooter,
@@ -183,14 +182,13 @@ export default function Quiz() {
 
 	const [submitted, setSubmitted] = createSignal(false);
 	const [text, setText] = createSignal('');
-	const words = () =>
-		wordLists()
-			.map((list) => WORD_DICTS[list])
-			.flat();
+	const words = () => wordLists().flatMap((list) => WORD_DICTS[list]);
 	const [word, setWord] = createSignal(getRandomItem(words()).toUpperCase());
 
 	function generateNewWord() {
-		if (bias() !== 0) {
+		if (bias() === 0) {
+			return getRandomItem(words()).toUpperCase();
+		} else {
 			const sortedWords = words()
 				.map((word: string) => ({
 					word,
@@ -206,29 +204,25 @@ export default function Quiz() {
 				2: 2, // 50% biased.
 				3: 1, // Always biased.
 			};
-			if (Math.floor(Math.random() * biasScore[bias()]) !== 0) {
-				return getRandomItem(words()).toUpperCase();
-			} else {
-				return getRandomItem(wordsWithLowestChars).word.toUpperCase();
-			}
-		} else {
-			return getRandomItem(words()).toUpperCase();
+			return Math.floor(Math.random() * biasScore[bias()]) === 0
+				? getRandomItem(wordsWithLowestChars).word.toUpperCase()
+				: getRandomItem(words()).toUpperCase();
 		}
 	}
 
 	function addCharacters(word: string) {
-		const characters = word.split('');
+		const characters = [...word];
 		for (const character of characters) {
-			if (!(character in pastCharacters())) {
-				setPastCharacters({
-					...pastCharacters(),
-					[character]: 1,
-				});
-			} else {
+			if (character in pastCharacters()) {
 				const key = character as keyof typeof pastCharacters;
 				setPastCharacters({
 					...pastCharacters,
 					[key]: pastCharacters()[key] + 1,
+				});
+			} else {
+				setPastCharacters({
+					...pastCharacters(),
+					[character]: 1,
 				});
 			}
 		}
@@ -242,7 +236,7 @@ export default function Quiz() {
 
 	function updateWords(checked: boolean, wordList: string) {
 		if (checked) {
-			setWordLists(Array.from(new Set([...wordLists(), wordList])));
+			setWordLists([...new Set([...wordLists(), wordList])]);
 		} else {
 			if (wordLists().length === 1) {
 				toaster.show((props) => (
@@ -402,8 +396,8 @@ export default function Quiz() {
 						value={text()}
 						onChange={setText}
 						class="uppercase"
-						onkeypress={(e: KeyboardEvent) => {
-							if (e.key === 'Enter') {
+						onkeypress={(event: KeyboardEvent) => {
+							if (event.key === 'Enter') {
 								setSubmitted(true);
 							}
 						}}
