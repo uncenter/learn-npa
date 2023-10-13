@@ -236,9 +236,6 @@ export default function Quiz() {
 				<SheetContent side="right" class="flex flex-col">
 					<SheetHeader>
 						<SheetTitle>Settings</SheetTitle>
-						<SheetDescription>
-							Make changes to your profile here. Click save when you're done.
-						</SheetDescription>
 					</SheetHeader>
 					<div>
 						<div class="flex flex-col gap-6">
@@ -324,9 +321,7 @@ export default function Quiz() {
 						>
 							Reset
 						</Button>
-						<SheetAction class="m-0">
-							Save & Close
-						</SheetAction>
+						<SheetAction class="m-0">Save & Close</SheetAction>
 					</SheetFooter>
 				</SheetContent>
 			</Sheet>
