@@ -1,6 +1,6 @@
 /* eslint-disable solid/reactivity */
 import { makePersisted } from '@solid-primitives/storage';
-import { createSignal, For } from 'solid-js';
+import { createSignal, For, onMount, Show } from 'solid-js';
 import { Portal } from 'solid-js/web';
 
 import { Button } from '@/components/ui/button';
@@ -55,6 +55,7 @@ import {
 	countCharOccurrences,
 	isCorrect,
 } from '@/quiz';
+import { Icons } from '@/components/icon';
 
 const AnswerCard = (props: {
 	correct: boolean;
@@ -169,10 +170,10 @@ const ReferenceCard = () => {
 };
 
 export default function Quiz() {
+	const [bias, setBias] = makePersisted(createSignal(2), { name: 'bias' });
 	const [wordLists, setWordLists] = makePersisted(createSignal(['short']), {
 		name: 'wordLists',
 	});
-	const [bias, setBias] = makePersisted(createSignal(2), { name: 'bias' });
 	const [pastCharacters, setPastCharacters] = makePersisted(
 		createSignal({}),
 		{
@@ -180,10 +181,11 @@ export default function Quiz() {
 		},
 	);
 
+	const words = () => wordLists().flatMap((list) => WORD_DICTS[list]);
+
 	const [submitted, setSubmitted] = createSignal(false);
 	const [text, setText] = createSignal('');
-	const words = () => wordLists().flatMap((list) => WORD_DICTS[list]);
-	const [word, setWord] = createSignal(getRandomItem(words()).toUpperCase());
+	const [word, setWord] = createSignal('');
 
 	function generateNewWord() {
 		if (bias() === 0) {
@@ -209,6 +211,10 @@ export default function Quiz() {
 				: getRandomItem(words()).toUpperCase();
 		}
 	}
+
+	onMount(() => {
+		setWord(generateNewWord());
+	});
 
 	function addCharacters(word: string) {
 		const characters = [...word];
@@ -390,8 +396,15 @@ export default function Quiz() {
 				</SheetContent>
 			</Sheet>
 			<div class="flex flex-col gap-4 mt-4">
-				<div class="self-center text-4xl bg-gray-200 text-zinc-700 rounded-lg p-4 mb-4">
-					{word()}
+				<div class="self-center text-4xl bg-gray-200 text-zinc-700 rounded-lg p-4 mb-4 h-16 flex flex-row items-center">
+					<Show
+						when={word() !== ''}
+						fallback={
+							<Icons.spinner class="h-full w-full animate-spin" />
+						}
+					>
+						{word()}
+					</Show>
 				</div>
 				<div class="flex flex-row gap-1 justify-center">
 					<ReferenceCard />
