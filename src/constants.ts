@@ -33,7 +33,9 @@ import shortWordsRaw from '@/data/short-words.txt?raw';
 
 export const LONG_WORDS = longWordsRaw.split('\n');
 export const MEDIUM_WORDS = medWordsRaw.split('\n');
-export const SHORT_WORDS = shortWordsRaw.split('\n').filter((word: string) => word.length > 3);
+export const SHORT_WORDS = shortWordsRaw
+	.split('\n')
+	.filter((word: string) => word.length > 3);
 
 export const WORD_DICTS: Record<string, string[]> = {
 	long: LONG_WORDS,

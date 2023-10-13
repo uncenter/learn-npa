@@ -13,11 +13,18 @@ export function isCorrect(words: string[], correctWords: string[]) {
 		words.every(
 			(word, i) =>
 				word.length > 1 &&
-				(fuzzy.get(word)[0][0] >= 0.85 || fuzzy.get(word)[0][1] === correctWords[i]),
+				(fuzzy.get(word)[0][0] >= 0.85 ||
+					fuzzy.get(word)[0][1] === correctWords[i]),
 		)
 	);
 }
 
-export function countCharOccurrences(word: string, charMap: Record<string, number>) {
-	return [...word].reduce((count, char) => count + (charMap[char.toUpperCase()] || 0), 0);
+export function countCharOccurrences(
+	word: string,
+	charMap: Record<string, number>,
+) {
+	return [...word].reduce(
+		(count, char) => count + (charMap[char.toUpperCase()] || 0),
+		0,
+	);
 }

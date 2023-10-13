@@ -10,7 +10,9 @@ import { buttonVariants } from './button';
 export const Sheet = DialogPrimitive.Root;
 export const SheetTrigger = DialogPrimitive.Trigger;
 
-export const SheetOverlay: ParentComponent<DialogPrimitive.DialogOverlayProps> = (props) => {
+export const SheetOverlay: ParentComponent<
+	DialogPrimitive.DialogOverlayProps
+> = (props) => {
 	const [local, rest] = splitProps(props, ['class']);
 	return (
 		<DialogPrimitive.Overlay
@@ -29,11 +31,9 @@ export const sheetVariants = cva(
 		variants: {
 			side: {
 				top: 'inset-x-0 top-0 border-b data-[closed]:slide-out-to-top data-[expanded]:slide-in-from-top',
-				bottom:
-					'inset-x-0 bottom-0 border-t data-[closed]:slide-out-to-bottom data-[expanded]:slide-in-from-bottom',
+				bottom: 'inset-x-0 bottom-0 border-t data-[closed]:slide-out-to-bottom data-[expanded]:slide-in-from-bottom',
 				left: 'inset-y-0 left-0 h-full w-3/4 border-r data-[closed]:slide-out-to-left data-[expanded]:slide-in-from-left sm:max-w-sm',
-				right:
-					'inset-y-0 right-0 h-full w-3/4 border-l data-[closed]:slide-out-to-right data-[expanded]:slide-in-from-right sm:max-w-sm',
+				right: 'inset-y-0 right-0 h-full w-3/4 border-l data-[closed]:slide-out-to-right data-[expanded]:slide-in-from-right sm:max-w-sm',
 			},
 		},
 		defaultVariants: {
@@ -45,7 +45,10 @@ export const sheetVariants = cva(
 export const SheetContent: ParentComponent<
 	DialogPrimitive.DialogContentProps & VariantProps<typeof sheetVariants>
 > = (props) => {
-	const merge = mergeProps({ side: 'right' } as VariantProps<typeof sheetVariants>, props);
+	const merge = mergeProps(
+		{ side: 'right' } as VariantProps<typeof sheetVariants>,
+		props,
+	);
 	const [local, rest] = splitProps(merge, ['class', 'children', 'side']);
 
 	return (
@@ -65,7 +68,9 @@ export const SheetContent: ParentComponent<
 	);
 };
 
-export const SheetTitle: ParentComponent<DialogPrimitive.DialogTitleProps> = (props) => {
+export const SheetTitle: ParentComponent<DialogPrimitive.DialogTitleProps> = (
+	props,
+) => {
 	const [local, rest] = splitProps(props, ['class']);
 	return (
 		<DialogPrimitive.Title
@@ -75,30 +80,52 @@ export const SheetTitle: ParentComponent<DialogPrimitive.DialogTitleProps> = (pr
 	);
 };
 
-export const SheetDescription: ParentComponent<DialogPrimitive.DialogDescriptionProps> = (
-	props,
-) => {
+export const SheetDescription: ParentComponent<
+	DialogPrimitive.DialogDescriptionProps
+> = (props) => {
 	const [local, rest] = splitProps(props, ['class']);
 	return (
-		<DialogPrimitive.Description class={cn('text-sm text-foreground', local.class)} {...rest} />
+		<DialogPrimitive.Description
+			class={cn('text-sm text-foreground', local.class)}
+			{...rest}
+		/>
 	);
 };
 
 export const SheetHeader: ParentComponent<ComponentProps<'div'>> = (props) => {
 	const [local, rest] = splitProps(props, ['class']);
 	return (
-		<div class={cn('flex flex-col space-y-2 text-center sm:text-left', local.class)} {...rest} />
+		<div
+			class={cn(
+				'flex flex-col space-y-2 text-center sm:text-left',
+				local.class,
+			)}
+			{...rest}
+		/>
 	);
 };
 
 export const SheetFooter: ParentComponent<ComponentProps<'div'>> = (props) => {
 	const [local, rest] = splitProps(props, ['class']);
 	return (
-		<div class={cn('flex flex-col-reverse sm:flex-row sm:justify-end', local.class)} {...rest} />
+		<div
+			class={cn(
+				'flex flex-col-reverse sm:flex-row sm:justify-end',
+				local.class,
+			)}
+			{...rest}
+		/>
 	);
 };
 
-export const SheetAction: ParentComponent<DialogPrimitive.DialogCloseButtonProps> = (props) => {
+export const SheetAction: ParentComponent<
+	DialogPrimitive.DialogCloseButtonProps
+> = (props) => {
 	const [local, rest] = splitProps(props, ['class', 'classList']);
-	return <DialogPrimitive.CloseButton class={cn(buttonVariants(), local.class)} {...rest} />;
+	return (
+		<DialogPrimitive.CloseButton
+			class={cn(buttonVariants(), local.class)}
+			{...rest}
+		/>
+	);
 };

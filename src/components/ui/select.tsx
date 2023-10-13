@@ -11,7 +11,9 @@ export const SelectErrorMessage = SelectPrimitive.ErrorMessage;
 export const SelectItemDescription = SelectPrimitive.ItemDescription;
 export const SelectHiddenSelect = SelectPrimitive.HiddenSelect;
 
-export const SelectTrigger: ParentComponent<SelectPrimitive.SelectTriggerProps> = (props) => {
+export const SelectTrigger: ParentComponent<
+	SelectPrimitive.SelectTriggerProps
+> = (props) => {
 	const [local, rest] = splitProps(props, ['class', 'children']);
 	return (
 		<SelectPrimitive.Trigger
@@ -29,7 +31,9 @@ export const SelectTrigger: ParentComponent<SelectPrimitive.SelectTriggerProps> 
 	);
 };
 
-export const SelectContent: VoidComponent<SelectPrimitive.SelectContentProps> = (props) => {
+export const SelectContent: VoidComponent<
+	SelectPrimitive.SelectContentProps
+> = (props) => {
 	const [local, rest] = splitProps(props, ['class']);
 	return (
 		<SelectPrimitive.Portal>
@@ -46,7 +50,9 @@ export const SelectContent: VoidComponent<SelectPrimitive.SelectContentProps> = 
 	);
 };
 
-export const SelectItem: ParentComponent<SelectPrimitive.SelectItemProps> = (props) => {
+export const SelectItem: ParentComponent<SelectPrimitive.SelectItemProps> = (
+	props,
+) => {
 	const [local, rest] = splitProps(props, ['class', 'children']);
 	return (
 		<SelectPrimitive.Item
@@ -59,7 +65,9 @@ export const SelectItem: ParentComponent<SelectPrimitive.SelectItemProps> = (pro
 			<SelectPrimitive.ItemIndicator class="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">
 				<TbCheck class="w-4 h-4" />
 			</SelectPrimitive.ItemIndicator>
-			<SelectPrimitive.ItemLabel>{local.children}</SelectPrimitive.ItemLabel>
+			<SelectPrimitive.ItemLabel>
+				{local.children}
+			</SelectPrimitive.ItemLabel>
 		</SelectPrimitive.Item>
 	);
 };

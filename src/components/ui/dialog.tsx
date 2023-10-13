@@ -8,7 +8,9 @@ import { buttonVariants } from './button';
 export const Dialog = DialogPrimitive.Root;
 export const DialogTrigger = DialogPrimitive.Trigger;
 
-export const DialogOverlay: ParentComponent<DialogPrimitive.DialogOverlayProps> = (props) => {
+export const DialogOverlay: ParentComponent<
+	DialogPrimitive.DialogOverlayProps
+> = (props) => {
 	const [local, rest] = splitProps(props, ['class']);
 	return (
 		<DialogPrimitive.Overlay
@@ -21,7 +23,9 @@ export const DialogOverlay: ParentComponent<DialogPrimitive.DialogOverlayProps> 
 	);
 };
 
-export const DialogContent: ParentComponent<DialogPrimitive.DialogContentProps> = (props) => {
+export const DialogContent: ParentComponent<
+	DialogPrimitive.DialogContentProps
+> = (props) => {
 	const [local, rest] = splitProps(props, ['class', 'children']);
 
 	return (
@@ -46,7 +50,9 @@ export const DialogContent: ParentComponent<DialogPrimitive.DialogContentProps> 
 	);
 };
 
-export const DialogTitle: ParentComponent<DialogPrimitive.DialogTitleProps> = (props) => {
+export const DialogTitle: ParentComponent<DialogPrimitive.DialogTitleProps> = (
+	props,
+) => {
 	const [local, rest] = splitProps(props, ['class']);
 	return (
 		<DialogPrimitive.Title
@@ -56,9 +62,9 @@ export const DialogTitle: ParentComponent<DialogPrimitive.DialogTitleProps> = (p
 	);
 };
 
-export const DialogDescription: ParentComponent<DialogPrimitive.DialogDescriptionProps> = (
-	props,
-) => {
+export const DialogDescription: ParentComponent<
+	DialogPrimitive.DialogDescriptionProps
+> = (props) => {
 	const [local, rest] = splitProps(props, ['class']);
 	return (
 		<DialogPrimitive.Description
@@ -71,7 +77,13 @@ export const DialogDescription: ParentComponent<DialogPrimitive.DialogDescriptio
 export const DialogHeader: ParentComponent<ComponentProps<'div'>> = (props) => {
 	const [local, rest] = splitProps(props, ['class']);
 	return (
-		<div class={cn('flex flex-col space-y-2 text-center sm:text-left', local.class)} {...rest} />
+		<div
+			class={cn(
+				'flex flex-col space-y-2 text-center sm:text-left',
+				local.class,
+			)}
+			{...rest}
+		/>
 	);
 };
 
@@ -79,13 +91,23 @@ export const DialogFooter: ParentComponent<ComponentProps<'div'>> = (props) => {
 	const [local, rest] = splitProps(props, ['class']);
 	return (
 		<div
-			class={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', local.class)}
+			class={cn(
+				'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2',
+				local.class,
+			)}
 			{...rest}
 		/>
 	);
 };
 
-export const DialogAction: ParentComponent<DialogPrimitive.DialogCloseButtonProps> = (props) => {
+export const DialogAction: ParentComponent<
+	DialogPrimitive.DialogCloseButtonProps
+> = (props) => {
 	const [local, rest] = splitProps(props, ['class', 'classList']);
-	return <DialogPrimitive.CloseButton class={cn(buttonVariants(), local.class)} {...rest} />;
+	return (
+		<DialogPrimitive.CloseButton
+			class={cn(buttonVariants(), local.class)}
+			{...rest}
+		/>
+	);
 };

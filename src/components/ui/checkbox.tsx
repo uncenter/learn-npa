@@ -9,7 +9,9 @@ export const Checkbox = CheckboxPrimitive.Root;
 export const CheckboxErrorMessage = CheckboxPrimitive.ErrorMessage;
 export const CheckboxDescription = CheckboxPrimitive.Description;
 
-export const CheckboxControl: ParentComponent<CheckboxPrimitive.CheckboxControlProps> = (props) => {
+export const CheckboxControl: ParentComponent<
+	CheckboxPrimitive.CheckboxControlProps
+> = (props) => {
 	const [local, rest] = splitProps(props, ['class', 'children']);
 
 	return (

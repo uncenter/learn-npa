@@ -34,7 +34,11 @@ import {
 	SheetAction,
 } from '@/components/ui/sheet';
 import { TextField, TextFieldInput } from '@/components/ui/textfield';
-import { Checkbox, CheckboxControl, CheckboxLabel } from '@/components/ui/checkbox';
+import {
+	Checkbox,
+	CheckboxControl,
+	CheckboxLabel,
+} from '@/components/ui/checkbox';
 import {
 	Select,
 	SelectContent,
@@ -46,7 +50,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { As, toaster } from '@kobalte/core';
 
 import { NATO_ALPHABET, WORD_DICTS } from '@/constants';
-import { convertToPhoneticWords, isCorrect, countCharOccurrences } from '@/quiz';
+import {
+	convertToPhoneticWords,
+	isCorrect,
+	countCharOccurrences,
+} from '@/quiz';
 import { cn, getRandomItem } from '@/lib/utils';
 
 const AnswerCard = (props: {
@@ -60,15 +68,24 @@ const AnswerCard = (props: {
 		<>
 			<Card class="m-8 text-center">
 				<CardHeader
-					class={cn(props.correct ? 'bg-green-500' : 'bg-[#b71c1c]', 'rounded-t-xl py-4')}
+					class={cn(
+						props.correct ? 'bg-green-500' : 'bg-[#b71c1c]',
+						'rounded-t-xl py-4',
+					)}
 				>
-					<CardTitle class={`flex font-bold text-white justify-center`}>{props.word}</CardTitle>
+					<CardTitle
+						class={`flex font-bold text-white justify-center`}
+					>
+						{props.word}
+					</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<div class={`p-6 flex text-lg uppercase`}>
 						<div class=" block basis-0 grow shrink p-3">
 							<h3 class="mb-2">Your answer</h3>
-							<p class="font-bold text-2xl">{props.input || 'N/A'}</p>
+							<p class="font-bold text-2xl">
+								{props.input || 'N/A'}
+							</p>
 						</div>
 						<div class="block basis-0 grow shrink p-3">
 							<h3 class="text-md mb-2">Correct answer</h3>
@@ -112,13 +129,29 @@ const ReferenceCard = () => {
 
 										return (
 											<tr class="border-none">
-												<th class="text-right px-4 py-2">{letter}</th>
-												<td class="text-left px-4 py-2">{phonetic}</td>
 												<th class="text-right px-4 py-2">
-													{rightAlphabet[leftAlphabet.indexOf(entry)][0]}
+													{letter}
 												</th>
 												<td class="text-left px-4 py-2">
-													{rightAlphabet[leftAlphabet.indexOf(entry)][1]}
+													{phonetic}
+												</td>
+												<th class="text-right px-4 py-2">
+													{
+														rightAlphabet[
+															leftAlphabet.indexOf(
+																entry,
+															)
+														][0]
+													}
+												</th>
+												<td class="text-left px-4 py-2">
+													{
+														rightAlphabet[
+															leftAlphabet.indexOf(
+																entry,
+															)
+														][1]
+													}
 												</td>
 											</tr>
 										);
@@ -137,11 +170,16 @@ const ReferenceCard = () => {
 };
 
 export default function Quiz() {
-	const [wordLists, setWordLists] = makePersisted(createSignal(['short']), { name: 'wordLists' });
-	const [bias, setBias] = makePersisted(createSignal(2), { name: 'bias' });
-	const [pastCharacters, setPastCharacters] = makePersisted(createSignal({}), {
-		name: 'pastCharacters',
+	const [wordLists, setWordLists] = makePersisted(createSignal(['short']), {
+		name: 'wordLists',
 	});
+	const [bias, setBias] = makePersisted(createSignal(2), { name: 'bias' });
+	const [pastCharacters, setPastCharacters] = makePersisted(
+		createSignal({}),
+		{
+			name: 'pastCharacters',
+		},
+	);
 
 	const [submitted, setSubmitted] = createSignal(false);
 	const [text, setText] = createSignal('');
@@ -210,9 +248,12 @@ export default function Quiz() {
 				toaster.show((props) => (
 					<Toast toastId={props.toastId} variant="destructive">
 						<ToastContent>
-							<ToastTitle>Cannot remove all word lists!</ToastTitle>
+							<ToastTitle>
+								Cannot remove all word lists!
+							</ToastTitle>
 							<ToastDescription>
-								Make sure you have at least one word list selected.
+								Make sure you have at least one word list
+								selected.
 							</ToastDescription>
 						</ToastContent>
 						<ToastProgress />
@@ -229,7 +270,11 @@ export default function Quiz() {
 		<>
 			<Sheet>
 				<SheetTrigger asChild>
-					<As component={Button} variant="outline" class="fixed top-5 right-8">
+					<As
+						component={Button}
+						variant="outline"
+						class="fixed top-5 right-8"
+					>
 						Settings
 					</As>
 				</SheetTrigger>
@@ -240,12 +285,16 @@ export default function Quiz() {
 					<div>
 						<div class="flex flex-col gap-6">
 							<div>
-								<h4 class="self-center font-medium text-base">Word length</h4>
+								<h4 class="self-center font-medium text-base">
+									Word length
+								</h4>
 								<div class="flex flex-row justify-around gap-2 mt-4">
 									<Checkbox
 										class="flex flex-row gap-2 cursor-pointer"
 										value="short"
-										defaultChecked={wordLists().includes('short')}
+										defaultChecked={wordLists().includes(
+											'short',
+										)}
 										onChange={(checked: boolean) => {
 											updateWords(checked, 'short');
 										}}
@@ -258,7 +307,9 @@ export default function Quiz() {
 									<Checkbox
 										class="flex flex-row gap-2 cursor-pointer"
 										value="medium"
-										defaultChecked={wordLists().includes('medium')}
+										defaultChecked={wordLists().includes(
+											'medium',
+										)}
 										onChange={(checked: boolean) => {
 											updateWords(checked, 'medium');
 										}}
@@ -271,7 +322,9 @@ export default function Quiz() {
 									<Checkbox
 										class="flex flex-row gap-2 cursor-pointer"
 										value="long"
-										defaultChecked={wordLists().includes('long')}
+										defaultChecked={wordLists().includes(
+											'long',
+										)}
 										onChange={(checked: boolean) => {
 											updateWords(checked, 'long');
 										}}
@@ -284,25 +337,38 @@ export default function Quiz() {
 								</div>
 							</div>
 							<div>
-								<h2 class="font-medium self-center text-base">Smart selection</h2>
+								<h2 class="font-medium self-center text-base">
+									Smart selection
+								</h2>
 								<p class="text-sm mt-2">
-									With a higher "smart selection" bias, selected words will have a more even
-									distribution of characters. Without, words will be selected at random, leaning
-									towards words with common characters.
+									With a higher "smart selection" bias,
+									selected words will have a more even
+									distribution of characters. Without, words
+									will be selected at random, leaning towards
+									words with common characters.
 								</p>
 								<Select
 									class="mt-4"
 									options={[0, 1, 2, 3]}
 									itemComponent={(props) => (
 										<SelectItem item={props.item}>
-											{{ 0: 'None', 1: 'Low', 2: 'Medium', 3: 'High' }[props.item.rawValue]}
+											{
+												{
+													0: 'None',
+													1: 'Low',
+													2: 'Medium',
+													3: 'High',
+												}[props.item.rawValue]
+											}
 										</SelectItem>
 									)}
 									onChange={setBias}
 									defaultValue={bias()}
 								>
 									<SelectTrigger>
-										<SelectValue<string>>{(state) => state.selectedOption()}</SelectValue>
+										<SelectValue<string>>
+											{(state) => state.selectedOption()}
+										</SelectValue>
 									</SelectTrigger>
 									<SelectContent />
 								</Select>
@@ -363,7 +429,10 @@ export default function Quiz() {
 					word={word()}
 					input={text()}
 					answer={convertToPhoneticWords(word()).join(' ')}
-					correct={isCorrect((text() || '').split(' '), convertToPhoneticWords(word()))}
+					correct={isCorrect(
+						(text() || '').split(' '),
+						convertToPhoneticWords(word()),
+					)}
 					next={next}
 				/>
 			)}

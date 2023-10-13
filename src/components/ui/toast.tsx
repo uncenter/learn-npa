@@ -36,7 +36,9 @@ export const Toast: ParentComponent<
 	);
 };
 
-export const ToastTitle: ParentComponent<ToastPrimitive.ToastTitleProps> = (props) => {
+export const ToastTitle: ParentComponent<ToastPrimitive.ToastTitleProps> = (
+	props,
+) => {
 	const [local, rest] = splitProps(props, ['class']);
 
 	return (
@@ -47,13 +49,22 @@ export const ToastTitle: ParentComponent<ToastPrimitive.ToastTitleProps> = (prop
 	);
 };
 
-export const ToastDescription: ParentComponent<ToastPrimitive.ToastDescriptionProps> = (props) => {
+export const ToastDescription: ParentComponent<
+	ToastPrimitive.ToastDescriptionProps
+> = (props) => {
 	const [local, rest] = splitProps(props, ['class']);
 
-	return <ToastPrimitive.Description class={cn('text-sm opacity-90', local.class)} {...rest} />;
+	return (
+		<ToastPrimitive.Description
+			class={cn('text-sm opacity-90', local.class)}
+			{...rest}
+		/>
+	);
 };
 
-export const ToastRegion: ParentComponent<ToastPrimitive.ToastRegionProps> = (props) => {
+export const ToastRegion: ParentComponent<ToastPrimitive.ToastRegionProps> = (
+	props,
+) => {
 	const merge = mergeProps<ToastPrimitive.ToastRegionProps[]>(
 		{
 			swipeDirection: 'down',
@@ -68,7 +79,9 @@ export const ToastRegion: ParentComponent<ToastPrimitive.ToastRegionProps> = (pr
 	);
 };
 
-export const ToastList: VoidComponent<ToastPrimitive.ToastListProps> = (props) => {
+export const ToastList: VoidComponent<ToastPrimitive.ToastListProps> = (
+	props,
+) => {
 	const [local, rest] = splitProps(props, ['class']);
 
 	return (
