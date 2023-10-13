@@ -261,7 +261,7 @@ export default function Quiz() {
 	}
 
 	return (
-		<>
+		<div class="p-4">
 			<Sheet>
 				<SheetTrigger asChild>
 					<As
@@ -395,14 +395,14 @@ export default function Quiz() {
 						disabled={submitted()}
 						value={text()}
 						onChange={setText}
-						class="uppercase"
+						class="uppercase w-full"
 						onkeypress={(event: KeyboardEvent) => {
 							if (event.key === 'Enter') {
 								setSubmitted(true);
 							}
 						}}
 					>
-						<TextFieldInput type="text" />
+						<TextFieldInput type="text" class="h-12 w-full" />
 					</TextField>
 					<Button
 						disabled={submitted() || text()?.length === 0}
@@ -435,6 +435,6 @@ export default function Quiz() {
 					<ToastList />
 				</ToastRegion>
 			</Portal>
-		</>
+		</div>
 	);
 }
