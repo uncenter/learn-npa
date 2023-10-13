@@ -1,5 +1,8 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import type { Config } from 'tailwindcss';
+
+import animate from 'tailwindcss-animate';
+
+export default {
 	darkMode: ['class', '[data-kb-theme="dark"]'],
 	content: ['src/routes/**/*.{ts,tsx}', 'src/components/**/*.{ts,tsx}'],
 	theme: {
@@ -53,20 +56,20 @@ module.exports = {
 			},
 			keyframes: {
 				'accordion-down': {
-					from: { height: 0 },
+					from: { height: '0' },
 					to: { height: 'var(--kb-accordion-content-height)' },
 				},
 				'accordion-up': {
 					from: { height: 'var(--kb-accordion-content-height)' },
-					to: { height: 0 },
+					to: { height: '0' },
 				},
 				'collapsible-down': {
-					from: { height: 0 },
+					from: { height: '0' },
 					to: { height: 'var(--kb-collapsible-content-height)' },
 				},
 				'collapsible-up': {
 					from: { height: 'var(--kb-collapsible-content-height)' },
-					to: { height: 0 },
+					to: { height: '0' },
 				},
 			},
 			animation: {
@@ -77,5 +80,5 @@ module.exports = {
 			},
 		},
 	},
-	plugins: [require('tailwindcss-animate')],
-};
+	plugins: [animate],
+} satisfies Config;
