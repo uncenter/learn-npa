@@ -275,7 +275,7 @@ export default function Quiz() {
 						variant="outline"
 						class="fixed top-5 right-8"
 					>
-						Settings
+						<Icons.settings />
 					</As>
 				</SheetTrigger>
 				<SheetContent side="right" class="flex flex-col">
