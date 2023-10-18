@@ -1,12 +1,20 @@
-import { defineConfig } from "vite";
-import solidPlugin from "vite-plugin-solid";
+import path from 'node:path';
+import url from 'node:url';
+import vercel from 'solid-start-vercel';
+import solid from 'solid-start/vite';
 
-export default defineConfig({
-    plugins: [solidPlugin()],
-    server: {
-        port: 3000,
-    },
-    build: {
-        target: "esnext",
-    },
+import { defineConfig } from 'vite';
+
+export default defineConfig(() => {
+	return {
+		plugins: [solid({ ssr: true, adapter: vercel({ edge: false }) })],
+		resolve: {
+			alias: {
+				'@': path.resolve(
+					path.dirname(url.fileURLToPath(import.meta.url)),
+					'./src',
+				),
+			},
+		},
+	};
 });

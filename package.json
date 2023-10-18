@@ -1,27 +1,44 @@
 {
-    "name": "phonetic-alphabet",
-    "scripts": {
-        "start": "vite",
-        "dev": "vite",
-        "build": "vite build",
-        "serve": "vite preview"
-    },
-    "devDependencies": {
-        "autoprefixer": "^10.4.13",
-        "postcss": "^8.4.21",
-        "tailwindcss": "^3.2.4",
-        "typescript": "^5.1.3",
-        "vite": "^4.1.4"
-    },
-    "dependencies": {
-        "@hope-ui/solid": "^0.6.7",
-        "@solidjs/meta": "^0.28.4",
-        "@solidjs/router": "^0.8.2",
-        "@stitches/core": "^1.2.8",
-        "@suid/icons-material": "^0.6.3",
-        "fuzzyset": "^1.0.7",
-        "solid-js": "^1.6.10",
-        "solid-transition-group": "^0.2.2",
-        "vite-plugin-solid": "^2.7.0"
-    }
+	"name": "phonetic-alphabet",
+	"scripts": {
+		"dev": "solid-start dev --port 3000",
+		"start": "solid-start start --port 3000",
+		"build": "solid-start build",
+		"lint": "eslint --fix \"**/*.{ts,tsx,js,jsx}\"",
+		"format": "prettier --write ."
+	},
+	"type": "module",
+	"dependencies": {
+		"@kobalte/core": "^0.11.0",
+		"@solid-primitives/storage": "^2.1.1",
+		"@solidjs/meta": "^0.28.6",
+		"@solidjs/router": "^0.8.3",
+		"class-variance-authority": "^0.7.0",
+		"clsx": "^2.0.0",
+		"fuzzyset": "^1.0.7",
+		"solid-icons": "^1.0.12",
+		"solid-js": "^1.8.1",
+		"solid-start": "^0.3.6",
+		"tailwind-merge": "^1.14.0",
+		"tailwindcss-animate": "^1.0.7",
+		"undici": "5.26.3"
+	},
+	"devDependencies": {
+		"@types/node": "^20.8.5",
+		"@typescript-eslint/eslint-plugin": "^6.7.5",
+		"@typescript-eslint/parser": "^6.7.5",
+		"autoprefixer": "^10.4.16",
+		"eslint": "^8.51.0",
+		"eslint-config-prettier": "^9.0.0",
+		"eslint-plugin-solid": "^0.13.0",
+		"eslint-plugin-unicorn": "^48.0.1",
+		"postcss": "^8.4.31",
+		"prettier": "^3.0.3",
+		"solid-start-node": "^0.3.6",
+		"solid-start-vercel": "^0.3.6",
+		"tailwindcss": "^3.3.3",
+		"typescript": "^5.2.2",
+		"vite": "^4.4.11"
+	},
+	"packageManager": "pnpm@8.9.0"
 }

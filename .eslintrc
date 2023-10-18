@@ -1,0 +1,23 @@
+{
+	"root": true,
+	"parser": "@typescript-eslint/parser",
+	"plugins": ["@typescript-eslint", "unicorn", "solid"],
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:unicorn/recommended",
+		"plugin:solid/typescript",
+		"prettier"
+	],
+	"parserOptions": {
+		"project": "./tsconfig.json"
+	},
+	"rules": {
+		"unicorn/no-useless-undefined": ["error", { "checkArguments": false }],
+		"unicorn/text-encoding-identifier-case": 0,
+		"unicorn/prevent-abbreviations": [
+			"error",
+			{ "replacements": { "props": false } }
+		]
+	}
+}
